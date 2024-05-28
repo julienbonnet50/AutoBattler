@@ -1,5 +1,5 @@
 import random
-from app.Constants.conf import DEBUG_MODE_MOVE
+from app.Constants.conf import *
 
 class Characters():
 
@@ -66,12 +66,15 @@ class Characters():
     
     def is_attack_possible(self, map):
         for spell in self.spells:
-            spell.find_possible_attacks(map, (self.position_x, self.position_y))
+            spell.find_possible_attacks(map, (self.position_x, self.position_y), self.name)
             if len(spell.possible_attacks) > 0:
                 spellPosition = random.choice(spell.possible_attacks)
                 # Get the target player's position from the spell position
                 target_position = (spellPosition[0], spellPosition[1], spellPosition[2])
                 # Call the spell_action method with the target player's position
+                if DEBUG_MODE_SPELL == True:
+                    print(f"Found possible attack from spell {spell.name} at position ({target_position})")
+
                 return spell, target_position
 
         return False

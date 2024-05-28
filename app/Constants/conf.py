@@ -1,4 +1,4 @@
 DEBUG_MODE_MOVE = True
-DEBUG_MODE_CHAR_METRICS = True
+DEBUG_MODE_SPELL = True
 
 # Player 1:
