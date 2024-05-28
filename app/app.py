@@ -12,12 +12,15 @@ class App:
         self.window = tk.Tk()
         self.window.title("AutoBattler")
         self.canvas = Canvas(self.window, bg=BACKGROUND, 
-				height=HEIGHT, width=WIDTH) 
+				height=HEIGHT, width=WIDTH)
+        self.label = Label(self.window, text="Turn :{}".format(self.turn), 
+                    font=('consolas', 20))  
         
     def initWindows(self):
         print("Initiate windows")
         self.canvas.pack() 
-    
+        
+        self.label.pack() 
         self.window.update()
         window_width = self.window.winfo_width() 
         window_height = self.window.winfo_height() 
@@ -46,9 +49,10 @@ class App:
     
     def displayChar(self):
         for char in self.characters:
+            CHAR_COLOR = char.resolveColor()
             print(f'Trying to create rectangle for body at pos ({char.position_x}, {char.position_y})')
             self.canvas.create_rectangle( 
-                (char.position_x - 1) * SPACE_SIZE, (char.position_y - 1) * SPACE_SIZE, (char.position_x + 1) * SPACE_SIZE, 
+                (char.position_x) * SPACE_SIZE, (char.position_y) * SPACE_SIZE, (char.position_x + 1) * SPACE_SIZE, 
                 (char.position_y + 1) * SPACE_SIZE, fill=CHAR_COLOR)
                                  
 
@@ -59,10 +63,14 @@ class App:
                 
     def endTurn(self):
         if self.deadChar == False:
+            self.canvas.delete(ALL)
             self.printStats()
             self.map.display()
             self.displayChar()
-
+            
+    def startTurn(self):
+        print("Turn : ", self.turn)
+        self.label.config(text="Turn :{}".format(self.turn)) 
 
     def checkDeadChar(self):
         for char in self.characters:
@@ -79,6 +87,7 @@ class App:
                 print(f'Placed {char.name} at ({char.position_x}, {char.position_y})')
 
         self.map.display()
+        self.displayChar()
 
     def find_player_by_position(self, position):
         positionCharName = self.map.map[position[0]][position[1]]
@@ -109,12 +118,14 @@ class App:
         if self.deadChar == True:
             return False
         
-        self.canvas.delete(ALL)
+        self.startTurn()
+
         for char in self.characters:
+            self.canvas.delete(ALL)
+
             # Start
             if char.checkIfAlive() == False:
                 break
-
             # Movements
             char.clear_moves()
             char.get_possible_moves(char.position_x, char.position_y, char.pm, self.map.mapSize)
@@ -142,7 +153,10 @@ class App:
             self.checkDeadChar()
 
             self.endTurn()
-            self.turn += 1
-            self.window.after(TIME, self.doTurn)
+            self.window.grab_set()
+            
+        self.turn += 1
+        self.window.after(TIME, self.doTurn)
+
 
             

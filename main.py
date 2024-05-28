@@ -12,7 +12,7 @@ import tkinter as tk
 import time
 
 # init
-map = Map(7)
+map = Map(25)
 turnToPlay = 5
 turn = 1
 
@@ -45,7 +45,7 @@ game = App(map, characters)
 game.initWindows()
 game.firstTurn()
 
-game.doTurn()
 print("Turn : ", game.turn)
+game.doTurn()
 
 game.window.mainloop()

@@ -6,6 +6,7 @@ class Characters():
     def __init__(self, name, hp, pa, pm, position_x, position_y, spells):
         self.name = name
         self.hp = hp
+        self.initial_hp = hp
         self.pa = pa
         self.current_pa = pa
         self.pm = pm
@@ -24,6 +25,16 @@ class Characters():
         
         return False
 
+    def resolveColor(self):
+        percent = (self.hp / self.initial_hp) * 100
+        if 80 < percent <= 100:
+            return CHAR_COLOR_100
+        elif 60 < percent < 80:
+            return CHAR_COLOR_80
+        elif 40 < percent < 60:
+            return CHAR_COLOR_60
+        else: return CHAR_COLOR_15
+        
     # Movement 
 
     def move(self, position):
