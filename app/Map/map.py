@@ -14,11 +14,13 @@ class Map:
             map.append(row)
         return map
     
-    def resetMap(self):
+    def resetMap(self, characters):
         self.map = self.create_map(self.mapSize)
+        for char in characters:
+            self.placeCharacters(char)
     
     def placeCharacters(self, characters):
-        self.map[characters.position_x][characters.position_y] = [characters.name[0]]
+        self.map[characters.position_x][characters.position_y] = characters.name
     
     def display(self):
         s = self.mapSize

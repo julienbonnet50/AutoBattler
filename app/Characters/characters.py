@@ -12,6 +12,9 @@ class Characters():
         self.position_y = position_y
         self.spells = spells
         self.possible_moves = []
+    
+    def printStats(self):
+        print(f'{self.name} has {self.hp} HP left')
 
     # Movement 
 
@@ -27,7 +30,8 @@ class Characters():
 
         final_position = random.choice(self.possible_moves)
         if  map.map[final_position[0]][final_position[1]] != '':
-            print(f"Characters {self.name} cannot move because cell ({final_position[0]}, {final_position[1]}) is already occupied")
+            if DEBUG_MODE_MOVE == True:
+                print(f"Characters {self.name} cannot move because cell ({final_position[0]}, {final_position[1]}) is already occupied")
             return self.position_x, self.position_y
 
         if DEBUG_MODE_MOVE == True:
@@ -63,6 +67,19 @@ class Characters():
         self.possible_moves = []
 
     # Spells
+
+    def clearSpells(self):
+        for spell in self.spells:
+            spell.clear_possible_attacks()
+
+    def checkPA(self):
+        for spell in self.spells:
+            if spell.cost <= self.pa:
+                return True
+        return False
+
+    def resetPA(self, initial_pa):
+        self.pa = initial_pa
     
     def is_attack_possible(self, map):
         for spell in self.spells:
@@ -75,6 +92,7 @@ class Characters():
                 if DEBUG_MODE_SPELL == True:
                     print(f"Found possible attack from spell {spell.name} at position ({target_position})")
 
+                self.pa -= spell.cost
                 return spell, target_position
 
         return False

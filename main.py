@@ -10,7 +10,7 @@ from app.Spells.spell import Spell
 
 # init
 map = Map(7)
-turnToPlay = 2
+turnToPlay = 5
 
 # Spells
 offense = Spell(OFFENSE_NAME, OFFENSE_RANGE, OFFENSE_DAMAGES, OFFENSE_COST)
@@ -18,8 +18,8 @@ morsure = Spell(MORSURE_NAME, MORSURE_RANGE, MORSURE_DAMAGES, MORSURE_COST)
 
 # Players
 eliotrope = Characters(P1_INIT_NAME, 
-                       P1_INIT_PA, 
                        P1_INIT_HP,
+                       P1_INIT_PA, 
                        P1_INIT_PM, 
                        P1_INIT_POSITION_X, 
                        P1_INIT_POSITION_Y,
@@ -39,9 +39,9 @@ bouftou = Characters(P2_INIT_NAME,
 characters = [eliotrope, bouftou]
 game = App(map, characters)
 # Start
-print("Turn : ", 0)
 game.firstTurn()
 
 for i in range (0, turnToPlay):
-    print("Turn : ", i + 1)
-    game.doTurn()
+    if game.checkDeadChar():
+        print("Turn : ", i + 1)
+        game.doTurn()
