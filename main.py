@@ -4,13 +4,17 @@ sys.dont_write_bytecode = True
 from app.Characters.characters import Characters
 from app.Map.map import Map
 from app.app import App
+from app.Constants.conf import *
 from app.Constants.initCharacters import *
 from app.Constants.initSpells import *
 from app.Spells.spell import Spell
+import tkinter as tk
+import time
 
 # init
 map = Map(7)
 turnToPlay = 5
+turn = 1
 
 # Spells
 offense = Spell(OFFENSE_NAME, OFFENSE_RANGE, OFFENSE_DAMAGES, OFFENSE_COST)
@@ -33,15 +37,15 @@ bouftou = Characters(P2_INIT_NAME,
                      P2_INIT_POSITION_Y,
                      [morsure])
 
-
-
 # Instanciate characters
 characters = [eliotrope, bouftou]
 game = App(map, characters)
+
 # Start
+game.initWindows()
 game.firstTurn()
 
-for i in range (0, turnToPlay):
-    if game.checkDeadChar():
-        print("Turn : ", i + 1)
-        game.doTurn()
+game.doTurn()
+print("Turn : ", game.turn)
+
+game.window.mainloop()

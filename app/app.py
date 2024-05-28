@@ -1,21 +1,75 @@
 from types import NoneType
 from app.Constants.conf import *
+import tkinter as tk
+from tkinter import *
 
 class App:
     def __init__(self, map, characters):
+        self.turn = 1
         self.map = map
         self.characters = characters
+        self.deadChar = False
+        self.window = tk.Tk()
+        self.window.title("AutoBattler")
+        self.canvas = Canvas(self.window, bg=BACKGROUND, 
+				height=HEIGHT, width=WIDTH) 
+        
+    def initWindows(self):
+        print("Initiate windows")
+        self.canvas.pack() 
+    
+        self.window.update()
+        window_width = self.window.winfo_width() 
+        window_height = self.window.winfo_height() 
+        screen_width = self.window.winfo_screenwidth() 
+        screen_height = self.window.winfo_screenheight() 
+
+        x = int((screen_width/2) - (window_width/2)) 
+        y = int((screen_height/2) - (window_height/2)) 
+
+        self.window.geometry(f"{window_width}x{window_height}+{x}+{y}") 
+        
+    def game_over(self): 
+        self.canvas.delete(ALL) 
+        self.canvas.create_text(self.canvas.winfo_width()/2, 
+                        self.canvas.winfo_height()/3, 
+                        font=('consolas', 70), 
+                        text="GAME DONE", fill="red", 
+                        tag="gameover") 
+        
+        text = f'Game duration : {self.turn}'
+        self.canvas.create_text(self.canvas.winfo_width()/2, 
+                        self.canvas.winfo_height()/1.4, 
+                        font=('consolas', 40), 
+                        text=text, fill="white") 
+        
+    
+    def displayChar(self):
+        for char in self.characters:
+            print(f'Trying to create rectangle for body at pos ({char.position_x}, {char.position_y})')
+            self.canvas.create_rectangle( 
+                (char.position_x - 1) * SPACE_SIZE, (char.position_y - 1) * SPACE_SIZE, (char.position_x + 1) * SPACE_SIZE, 
+                (char.position_y + 1) * SPACE_SIZE, fill=CHAR_COLOR)
+                                 
 
     def printStats(self):
-        for char in self.characters:
-            char.printStats()
+        if self.deadChar == False:
+            for char in self.characters:
+                char.printStats()
+                
+    def endTurn(self):
+        if self.deadChar == False:
+            self.printStats()
+            self.map.display()
+            self.displayChar()
+
 
     def checkDeadChar(self):
         for char in self.characters:
             if char.hp < 0:
-                print(f'\nGame is done, {char.name} is dead !\n ')
-                return False
-        return True
+                print(f'\nGame is done, {char.name} is dead !')
+                self.deadChar = True
+                self.game_over()
     
     def firstTurn(self):
         print("Turn : 0")
@@ -52,9 +106,14 @@ class App:
     
 
     def doTurn(self):
+        if self.deadChar == True:
+            return False
+        
+        self.canvas.delete(ALL)
         for char in self.characters:
             # Start
-            print(f"Starting turn of {char.name}")
+            if char.checkIfAlive() == False:
+                break
 
             # Movements
             char.clear_moves()
@@ -79,7 +138,11 @@ class App:
             char.resetPA()
             char.clearSpells()
             
-            print("\n")
-            self.printStats()
-            self.map.display()
+            # End
+            self.checkDeadChar()
+
+            self.endTurn()
+            self.turn += 1
+            self.window.after(TIME, self.doTurn)
+
             

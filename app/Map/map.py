@@ -1,9 +1,13 @@
 from app.Characters.characters import Characters
+from app.Constants.conf import *
+import tkinter as tk
+from tkinter import *
 
 class Map:
     def __init__(self, x):
         self.mapSize = x
         self.map = self.create_map(x)
+        self.bodies = []
 
     def create_map(self, n):
         map = []
@@ -28,7 +32,7 @@ class Map:
         # print(grid_size)
         num_rows = s
         num_cols = s
-
+        print("\n")
         for row in range(num_rows):
             for col in range(num_cols-1):
                 print("+---",end="")

@@ -7,6 +7,7 @@ class Characters():
         self.name = name
         self.hp = hp
         self.pa = pa
+        self.current_pa = pa
         self.pm = pm
         self.position_x = position_x
         self.position_y = position_y
@@ -15,6 +16,13 @@ class Characters():
     
     def printStats(self):
         print(f'{self.name} has {self.hp} HP left')
+
+    def checkIfAlive(self):
+        if self.hp > 0:
+            print(f"Starting turn of {self.name}")
+            return True
+        
+        return False
 
     # Movement 
 
@@ -74,12 +82,12 @@ class Characters():
 
     def checkPA(self):
         for spell in self.spells:
-            if spell.cost <= self.pa:
+            if spell.cost <= self.current_pa:
                 return True
         return False
 
-    def resetPA(self, initial_pa):
-        self.pa = initial_pa
+    def resetPA(self):
+        self.current_pa = self.pa
     
     def is_attack_possible(self, map):
         for spell in self.spells:
@@ -92,7 +100,7 @@ class Characters():
                 if DEBUG_MODE_SPELL == True:
                     print(f"Found possible attack from spell {spell.name} at position ({target_position})")
 
-                self.pa -= spell.cost
+                self.current_pa -= spell.cost
                 return spell, target_position
 
         return False
