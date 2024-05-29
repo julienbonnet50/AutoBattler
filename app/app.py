@@ -1,7 +1,9 @@
+import sys
+sys.dont_write_bytecode = True
+import time
 from types import NoneType
 from app.Constants.conf import *
-import tkinter as tk
-from tkinter import *
+import pygame
 
 class App:
     def __init__(self, map, characters):
@@ -9,77 +11,87 @@ class App:
         self.map = map
         self.characters = characters
         self.deadChar = False
-        self.window = tk.Tk()
-        self.window.title("AutoBattler")
-        self.canvas = Canvas(self.window, bg=BACKGROUND, 
-				height=HEIGHT, width=WIDTH)
-        self.label = Label(self.window, text="Turn :{}".format(self.turn), 
-                    font=('consolas', 20))  
+        self.game_window = None
         
-    def initWindows(self):
-        print("Initiate windows")
-        self.canvas.pack() 
-        
-        self.label.pack() 
-        self.window.update()
-        window_width = self.window.winfo_width() 
-        window_height = self.window.winfo_height() 
-        screen_width = self.window.winfo_screenwidth() 
-        screen_height = self.window.winfo_screenheight() 
+        self.initUi()
 
-        x = int((screen_width/2) - (window_width/2)) 
-        y = int((screen_height/2) - (window_height/2)) 
 
-        self.window.geometry(f"{window_width}x{window_height}+{x}+{y}") 
-        
-    def game_over(self): 
-        self.canvas.delete(ALL) 
-        self.canvas.create_text(self.canvas.winfo_width()/2, 
-                        self.canvas.winfo_height()/3, 
-                        font=('consolas', 70), 
-                        text="GAME DONE", fill="red", 
-                        tag="gameover") 
-        
-        text = f'Game duration : {self.turn}'
-        self.canvas.create_text(self.canvas.winfo_width()/2, 
-                        self.canvas.winfo_height()/1.4, 
-                        font=('consolas', 40), 
-                        text=text, fill="white") 
-        
-    
-    def displayChar(self):
-        for char in self.characters:
-            CHAR_COLOR = char.resolveColor()
-            print(f'Trying to create rectangle for body at pos ({char.position_x}, {char.position_y})')
-            self.canvas.create_rectangle( 
-                (char.position_x) * SPACE_SIZE, (char.position_y) * SPACE_SIZE, (char.position_x + 1) * SPACE_SIZE, 
-                (char.position_y + 1) * SPACE_SIZE, fill=CHAR_COLOR)
-                                 
+    def initUi(self):
+        # Initialising pygame
+        pygame.init()
+
+        # Initialise game window
+        pygame.display.set_caption('AutoBattler')
+        self.game_window = game_window = pygame.display.set_mode((WIDTH, HEIGHT))
 
     def printStats(self):
         if self.deadChar == False:
             for char in self.characters:
                 char.printStats()
+
+    def displayTurn(self):
+        score_font = pygame.font.SysFont(FONT, 15)
+        score_surface = score_font.render('Turn : ' + str(self.turn), True, WHITE)
+        score_rect = score_surface.get_rect()
+        self.game_window.blit(score_surface, score_rect)
+
+    def displayChar(self):
+        for char in self.characters:
+            CHAR_COLOR = char.resolveColor()
+            if DEBUG_MODE_MOVE == True:
+                print(f'Trying to create rectangle for body at pos ({char.position_x}, {char.position_y})')
+
+            pygame.draw.rect(self.game_window, CHAR_COLOR, pygame.Rect(
+		    (char.position_x ) * SPACE_SIZE + SPACE_SIZE, (char.position_y) * SPACE_SIZE + SPACE_SIZE, SPACE_SIZE, SPACE_SIZE))
+
+    def displayGrid(self):
+        for x in range(0, self.map.mapSize * SPACE_SIZE, SPACE_SIZE):
+            for y in range(0, SPACE_SIZE * self.map.mapSize, SPACE_SIZE):
+                rect = pygame.Rect(x + SPACE_SIZE, y + SPACE_SIZE, SPACE_SIZE, SPACE_SIZE)
+                pygame.draw.rect(self.game_window, WHITE, rect, 1)
+            
+    def game_over(self):
+        my_font = pygame.font.SysFont(FONT, 20)
+
+        game_over_surface = my_font.render(
+            'Game turn : ' + str(self.turn), True, WHITE)
+        game_over_rect = game_over_surface.get_rect()
+        game_over_rect.midtop = (WIDTH/2, HEIGHT/4)
+        self.game_window.blit(game_over_surface, game_over_rect)
+
+        for char in self.characters:
+            if char.hp < 0:
+                game_over_msg1_surface = my_font.render(
+                    f'Game is done, {char.name} is dead !', True, WHITE
+                )
+                game_over_msg1_rect = game_over_msg1_surface.get_rect()
+                game_over_msg1_rect.midtop = (WIDTH/2, HEIGHT/2)
+                self.game_window.blit(game_over_msg1_surface, game_over_msg1_rect)
+
+        pygame.display.flip()
+        time.sleep(5)
+        pygame.quit()
+        quit()
+
+    def startTurn(self):
+        self.game_window.fill(BLACK)
+        self.displayGrid()
+        self.displayChar()
                 
     def endTurn(self):
         if self.deadChar == False:
-            self.canvas.delete(ALL)
             self.printStats()
             self.map.display()
-            self.displayChar()
-            
-    def startTurn(self):
-        print("Turn : ", self.turn)
-        self.label.config(text="Turn :{}".format(self.turn)) 
 
     def checkDeadChar(self):
         for char in self.characters:
             if char.hp < 0:
                 print(f'\nGame is done, {char.name} is dead !')
-                self.deadChar = True
                 self.game_over()
+                self.deadChar = True
     
     def firstTurn(self):
+
         print("Turn : 0")
         for char in self.characters:
             self.map.placeCharacters(char)
@@ -87,7 +99,6 @@ class App:
                 print(f'Placed {char.name} at ({char.position_x}, {char.position_y})')
 
         self.map.display()
-        self.displayChar()
 
     def find_player_by_position(self, position):
         positionCharName = self.map.map[position[0]][position[1]]
@@ -117,16 +128,13 @@ class App:
     def doTurn(self):
         if self.deadChar == True:
             return False
-        
-        self.startTurn()
 
         for char in self.characters:
-            self.canvas.delete(ALL)
-
             # Start
             if char.checkIfAlive() == False:
                 break
             # Movements
+            self.startTurn()
             char.clear_moves()
             char.get_possible_moves(char.position_x, char.position_y, char.pm, self.map.mapSize)
 
@@ -153,10 +161,12 @@ class App:
             self.checkDeadChar()
 
             self.endTurn()
-            self.window.grab_set()
-            
+            self.displayTurn()
+            pygame.display.update()
+
+        time.sleep(TIME)
         self.turn += 1
-        self.window.after(TIME, self.doTurn)
+
 
 
             

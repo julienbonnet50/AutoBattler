@@ -42,10 +42,9 @@ characters = [eliotrope, bouftou]
 game = App(map, characters)
 
 # Start
-game.initWindows()
 game.firstTurn()
 
-print("Turn : ", game.turn)
-game.doTurn()
+while game.deadChar == False:
+    print("Turn : ", game.turn)
+    game.doTurn()
 
-game.window.mainloop()
