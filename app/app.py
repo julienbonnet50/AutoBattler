@@ -2,15 +2,17 @@ import sys
 sys.dont_write_bytecode = True
 import time
 from types import NoneType
+from app.Waves.wave import Wave
 from app.Constants.conf import *
 import pygame
 
 class App:
-    def __init__(self, map, characters):
+    def __init__(self, wave):
         self.turn = 1
-        self.map = map
-        self.characters = characters
-        self.deadChar = False
+        self.map = wave.map
+        self.characters = wave.characters
+        self.ennemiesAlive = None
+        self.alliesAlive = None
         self.game_window = None
         
         self.initUi()
@@ -33,6 +35,8 @@ class App:
         self.game_window.blit(info_surface, info_rect)
 
     def printStats(self):
+        count_ally = 0
+        count_ennemie = 0
         for char in self.characters:
             char.printStats()
             title_font = pygame.font.SysFont(FONT, 22,  True)
@@ -40,8 +44,17 @@ class App:
            
             if char.team == "ally":
                 self.placeInformation(title_font, WIDTH/2 + 125, HEIGHT/2, 'Ally stats', HAPPY_BLUE, True)
+                self.placeInformation(core_font, WIDTH/2 + 130, (count_ally * 82) + HEIGHT/2 + 42, f'Name : {char.name}', HAPPY_BLUE, True)
+                self.placeInformation(core_font, WIDTH/2 + 115, (count_ally * 82) + HEIGHT/2 + 62, f'HP : {char.hp}', HAPPY_BLUE, True)
+                self.placeInformation(core_font, WIDTH/2 + 135, (count_ally * 82) + HEIGHT/2 + 82, f'Position : ({char.position_x}, {char.position_y})', HAPPY_BLUE, True)
+                count_ally += 1
             else:
-                self.placeInformation(title_font, WIDTH/2 + 150, SPACE_SIZE, 'Ennemies stats', VIOLET, True)
+                self.placeInformation(title_font, WIDTH/2 + +150,SPACE_SIZE, 'Ennemies stats', VIOLET, True)
+                self.placeInformation(core_font, WIDTH/2 + 130, (count_ennemie * 82) + SPACE_SIZE + 42, f'Name : {char.name}', VIOLET, True)
+                self.placeInformation(core_font, WIDTH/2 + 115, (count_ennemie * 82) + SPACE_SIZE + 62, f'HP : {char.hp}', VIOLET, True)
+                self.placeInformation(core_font, WIDTH/2 + 135, (count_ennemie * 82) + SPACE_SIZE + 82, f'Position : ({char.position_x}, {char.position_y})', VIOLET, True)
+                count_ennemie += 1
+
 
     def displayTurn(self):
         score_font = pygame.font.SysFont(FONT, 15)
@@ -76,25 +89,19 @@ class App:
     def game_over(self):
         my_font = pygame.font.SysFont(FONT, 20)
 
-        game_over_surface = my_font.render(
-            'Game turn : ' + str(self.turn), True, WHITE)
-        game_over_rect = game_over_surface.get_rect()
-        game_over_rect.midtop = (WIDTH/2, HEIGHT/4)
-        self.game_window.blit(game_over_surface, game_over_rect)
-
-        for char in self.characters:
-            if char.hp < 0:
-                game_over_msg1_surface = my_font.render(
-                    f'Game is done, {char.name} is dead !', True, WHITE
-                )
-                game_over_msg1_rect = game_over_msg1_surface.get_rect()
-                game_over_msg1_rect.midtop = (WIDTH/2, HEIGHT/2)
-                self.game_window.blit(game_over_msg1_surface, game_over_msg1_rect)
+        self.placeInformation(my_font,WIDTH/2, HEIGHT/4, f'Game turn : ' + str(self.turn), RED, True)
 
         pygame.display.flip()
         time.sleep(5)
         pygame.quit()
         quit()
+
+    def game_win(self):
+        my_font = pygame.font.SysFont(FONT, 20)
+
+        self.placeInformation(my_font, WIDTH/2, HEIGHT/4, f'GOOD GAME !!! done in ' + str(self.turn) + ' turn', GREEN, True)
+        #TOdo go next wave
+
 
     def startTurn(self):
         self.game_window.fill(BLACK)
@@ -102,26 +109,39 @@ class App:
         self.displayChar()
                 
     def endTurn(self):
-        if self.deadChar == False:
-            self.printStats()
-            self.map.display()
-            print('\n')
+        self.printStats()
+        self.map.display()
+        print('\n')
 
-    def checkDeadChar(self):
+    def getGameState(self):
         for char in self.characters:
             if char.hp < 0:
-                print(f'\nGame is done, {char.name} is dead !')
-                self.game_over()
-                self.deadChar = True
-    
-    def firstTurn(self):
+                print(f'\n{char.name} is dead !')
+                self.characters.remove(char)
+                self.ennemiesAlive -= 1
 
+            if self.alliesAlive == 0:
+                self.game_over()
+
+            if self.ennemiesAlive == 0:
+                self.game_win()
+
+
+    def firstTurn(self):
+        countEnnemies = 0
+        countAllies = 0
         print("Turn : 0")
         for char in self.characters:
+            if char.team == 'ennemies':
+                countEnnemies += 1
+            elif char.team == 'ally':
+                countAllies += 1
+
             self.map.placeCharacters(char)
             if DEBUG_MODE_MOVE == True:
                 print(f'Placed {char.name} at ({char.position_x}, {char.position_y})')
 
+        self.ennemiesAlive = countEnnemies
         self.map.display()
 
     def find_player_by_position(self, position):
@@ -155,12 +175,9 @@ class App:
     
 
     def doTurn(self):
-        if self.deadChar == True:
-            return False
-
         for char in self.characters:
             # Start
-            if char.checkIfAlive() == False:
+            if char.team == 'ally' and char.checkIfAlive() == False:
                 break
             # Movements
             self.startTurn()
@@ -180,14 +197,15 @@ class App:
                 spell = char.is_attack_possible(self.map)
                 if spell != False:
                     target = self.find_player_by_position(spell[1])
-                    self.spellActionApp(char, target, spell[0])
+                    if self.spellActionApp(char, target, spell[0]) == False:
+                        break
                 else: break
 
             char.resetPA()
             char.clearSpells()
             
             # End
-            self.checkDeadChar()
+            self.getGameState()
 
             self.endTurn()
             self.displayTurn()

@@ -13,7 +13,7 @@ HEIGHT = 550
 SPACE_SIZE = 20
 
 # TURN
-TIME = 0.4
+TIME = 0.1
 
 # COLORS
 BLACK = pygame.Color(0, 0, 0)
