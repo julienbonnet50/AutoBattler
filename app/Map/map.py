@@ -1,4 +1,4 @@
-from app.Characters.characters import Characters
+from app.Entity.characters import Characters
 from app.Constants.conf import *
 import tkinter as tk
 from tkinter import *

@@ -24,10 +24,24 @@ class App:
         pygame.display.set_caption('AutoBattler')
         self.game_window = game_window = pygame.display.set_mode((WIDTH, HEIGHT))
 
+    def placeInformation(self, font, x, y, text, color, bold):
+        info_surface = font.render(
+            f'{text}', bold, color
+        )
+        info_rect = info_surface.get_rect()
+        info_rect.midtop = (x, y)
+        self.game_window.blit(info_surface, info_rect)
+
     def printStats(self):
-        if self.deadChar == False:
-            for char in self.characters:
-                char.printStats()
+        for char in self.characters:
+            char.printStats()
+            title_font = pygame.font.SysFont(FONT, 22,  True)
+            core_font = pygame.font.SysFont(FONT, 16)
+           
+            if char.team == "ally":
+                self.placeInformation(title_font, WIDTH/2 + 125, HEIGHT/2, 'Ally stats', HAPPY_BLUE, True)
+            else:
+                self.placeInformation(title_font, WIDTH/2 + 150, SPACE_SIZE, 'Ennemies stats', VIOLET, True)
 
     def displayTurn(self):
         score_font = pygame.font.SysFont(FONT, 15)
@@ -38,11 +52,20 @@ class App:
     def displayChar(self):
         for char in self.characters:
             CHAR_COLOR = char.resolveColor()
+            ratio = char.hp  / char.max_hp
             if DEBUG_MODE_MOVE == True:
                 print(f'Trying to create rectangle for body at pos ({char.position_x}, {char.position_y})')
 
             pygame.draw.rect(self.game_window, CHAR_COLOR, pygame.Rect(
 		    (char.position_x ) * SPACE_SIZE + SPACE_SIZE, (char.position_y) * SPACE_SIZE + SPACE_SIZE, SPACE_SIZE, SPACE_SIZE))
+
+            # Draw Health bar
+            pygame.draw.rect(self.game_window, RED, pygame.Rect(
+                (char.position_x) * SPACE_SIZE + SPACE_SIZE - 10, (char.position_y) * SPACE_SIZE -10 + SPACE_SIZE, SPACE_SIZE + 20, 5 )
+            )
+            pygame.draw.rect(self.game_window, GREEN, pygame.Rect(
+                (char.position_x) * SPACE_SIZE + SPACE_SIZE - 10, (char.position_y) * SPACE_SIZE - 10 + SPACE_SIZE, (SPACE_SIZE + 20) * ratio, 5 )
+            )
 
     def displayGrid(self):
         for x in range(0, self.map.mapSize * SPACE_SIZE, SPACE_SIZE):
@@ -82,6 +105,7 @@ class App:
         if self.deadChar == False:
             self.printStats()
             self.map.display()
+            print('\n')
 
     def checkDeadChar(self):
         for char in self.characters:
@@ -118,7 +142,12 @@ class App:
         if target is None:
             print("No target found")
             return False
+        
+        if target.team  == caster.team:
+            print("Target got the same team as caster")
+            return False
 
+        caster.current_pa -= spell.cost
         target.hp -= spell.damage
 
         print(f"{caster.name} casts {spell.name} on {target.name} for {spell.damage} damage!")

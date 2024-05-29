@@ -3,11 +3,12 @@ from app.Constants.conf import *
 
 class Characters():
 
-    def __init__(self, name, hp, pa, pm, position_x, position_y, spells):
+    def __init__(self, name, hp, pa, pm, position_x, position_y, spells, team):
         self.name = name
         self.hp = hp
-        self.initial_hp = hp
+        self.max_hp = hp
         self.pa = pa
+        self.team = team
         self.current_pa = pa
         self.pm = pm
         self.position_x = position_x
@@ -20,20 +21,17 @@ class Characters():
 
     def checkIfAlive(self):
         if self.hp > 0:
-            print(f"Starting turn of {self.name}")
+            if DEBUG_MODE_MOVE == True:
+                print(f"Starting turn of {self.name}")
             return True
         
         return False
 
     def resolveColor(self):
-        percent = (self.hp / self.initial_hp) * 100
-        if 80 < percent <= 100:
-            return CHAR_COLOR_100
-        elif 60 < percent < 80:
-            return CHAR_COLOR_80
-        elif 40 < percent < 60:
-            return CHAR_COLOR_60
-        else: return CHAR_COLOR_15
+        if self.team == "ally":
+            return HAPPY_BLUE
+        elif self.team == "ennemies":
+            return VIOLET
         
     # Movement 
 
@@ -62,31 +60,21 @@ class Characters():
         # Vérifier si le joueur a encore des points de déplacement
         if pm <= 0:
             return []
-
-        # Explorer les cases adjacentes
         for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
-            # Calculer la nouvelle position
             new_position_x = position_x + dx
             new_position_y = position_y + dy
-
-            # Vérifier si la nouvelle position est dans les limites de la grille
             if 0 <= new_position_x < map_size and 0 <= new_position_y < map_size:
-                # Vérifier si le joueur a suffisamment de points de déplacement pour s'y rendre
                 distance = abs(dx) + abs(dy)
                 if pm >= distance:
-
                     if (new_position_x, new_position_y) not in self.possible_moves:
-                        # Appeler récursivement la fonction avec la nouvelle position et le nombre de points de déplacement restants
                         self.get_possible_moves(new_position_x, new_position_y, pm - distance, map_size)
-
-                        # Ajouter la nouvelle position et les possibilités de déplacement suivantes à la liste de possibilités de déplacement
                         self.possible_moves.append((new_position_x, new_position_y))
     
     def clear_moves(self):
         self.possible_moves = []
 
     # Spells
-
+    
     def clearSpells(self):
         for spell in self.spells:
             spell.clear_possible_attacks()
@@ -111,7 +99,6 @@ class Characters():
                 if DEBUG_MODE_SPELL == True:
                     print(f"Found possible attack from spell {spell.name} at position ({target_position})")
 
-                self.current_pa -= spell.cost
                 return spell, target_position
 
         return False

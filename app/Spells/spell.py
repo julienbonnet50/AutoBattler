@@ -33,3 +33,4 @@ class Spell:
                         
                         # Add the enemy character's position to the list of possible attacks
                         self.possible_attacks.append((x, y, map.map[x][y]))
+
