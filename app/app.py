@@ -5,6 +5,11 @@ from types import NoneType
 from app.Waves.wave import Wave
 from app.Constants.conf import *
 import pygame
+import pygame
+import os
+
+# get the directory of this file
+sourceFileDir = os.path.dirname(os.path.abspath(__file__))
 
 class App:
     def __init__(self, wave):
@@ -21,6 +26,9 @@ class App:
     def initUi(self):
         # Initialising pygame
         pygame.init()
+        iconPath = os.path.join(sourceFileDir, 'iconAutoBattler.png')
+        programIcon = pygame.image.load(iconPath)
+        pygame.display.set_icon(programIcon)
 
         # Initialise game window
         pygame.display.set_caption('AutoBattler')
