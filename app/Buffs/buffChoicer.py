@@ -121,7 +121,6 @@ class BuffChoicer():
                     self.displayBuffChoice(game_window, True, button['index'])
 
             for event in pygame.event.get():
-
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # check if the mouse click occurred within the bounds of a button
                     print(f'Click at {event.pos}')
@@ -133,6 +132,6 @@ class BuffChoicer():
                             for i in range (0, len(self.buttons)):
                                 if button['index'] == i:
                                     if DEBUG_BUFF == True:
-                                        print('Buff 1 selected')
+                                        print(f'Buff number {i} selected')
                                     return i
 

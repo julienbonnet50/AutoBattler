@@ -1,10 +1,10 @@
 from app.Conf.conf import *
 
 class Spell:
-    def __init__(self,name, range, damages, cost):
+    def __init__(self,name, range, damage, cost):
         self.name = name
         self.range = range
-        self.damage = damages
+        self.damage = damage
         self.cost = cost
         self.possible_attacks = []
 

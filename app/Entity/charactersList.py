@@ -21,7 +21,9 @@ class CharactersList:
                             ARCHER_INIT_POSITION_Y,
                             [self.Spell_offense],
                             ARCHER_INIT_TEAM,
-                            ARCHER_INIT_PATHIMG)
+                            ARCHER_INIT_PATHIMG,
+                            ARCHER_INIT_DAMAGE,
+                            ARCHER_INIT_SPEED)
 
         self.Entity_HAND = Characters(HAND_INIT_NAME + "1", 
                             HAND_INIT_HP,
@@ -31,7 +33,9 @@ class CharactersList:
                             HAND_INIT_POSITION_Y,
                             [self.Spell_morsure],
                             HAND_INIT_TEAM,
-                            HAND_INIT_PATHIMG)
+                            HAND_INIT_PATHIMG,
+                            HAND_INIT_DAMAGE,
+                            HAND_INIT_SPEED)
 
         self.Entity_MOSKITOS = Characters(MOSKITOS_INIT_NAME, 
                             MOSKITOS_INIT_HP,
@@ -41,4 +45,18 @@ class CharactersList:
                             MOSKITOS_INIT_POSITION_Y,
                             [self.Spell_beco],
                             MOSKITOS_INIT_TEAM,
-                            MOSKITOS_INIT_PATHIMG)
+                            MOSKITOS_INIT_PATHIMG,
+                            MOSKITOS_INIT_DAMAGE,
+                            MOSKITOS_INIT_SPEED)
+        
+        self.Entity_BOSS = Characters(BOSS_INIT_NAME, 
+                            BOSS_INIT_HP,
+                            BOSS_INIT_PA, 
+                            BOSS_INIT_PM, 
+                            BOSS_INIT_POSITION_X, 
+                            BOSS_INIT_POSITION_Y,
+                            [self.Spell_beco],
+                            BOSS_INIT_TEAM,
+                            BOSS_INIT_PATHIMG,
+                            BOSS_INIT_DAMAGE,
+                            BOSS_INIT_SPEED)

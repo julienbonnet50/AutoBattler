@@ -12,13 +12,12 @@ import os
 sourceFileDir = os.path.dirname(os.path.abspath(__file__))
 
 class App:
-    def __init__(self, wave, buffPools):
-
+    def __init__(self, ally, wave, buffPools):
         pygame.init()
 
         self.turn = 1
         self.map = wave.map
-        self.characters = wave.characters
+        self.characters = wave.characters.append(ally)
         self.ennemiesAlive = None
         self.alliesAlive = None
         self.game_window = None
@@ -27,6 +26,8 @@ class App:
         self.initUi()
 
         self.buffChoicer = BuffChoicer(self.buffSelected,WIDTH, HEIGHT)
+    
+        self.orderChars()
 
 
     def initUi(self):
@@ -106,7 +107,14 @@ class App:
                 pygame.draw.rect(self.game_window, WHITE, rect, 1)
 
     # Wave :
-            
+    
+    def selectAllyBuffed(self):
+        allyBuffed = []
+        for char in self.characters:
+            if char.team == 'ally':
+                allyBuffed.append(char)  
+        return allyBuffed      
+    
     def game_over(self):
         my_font = pygame.font.SysFont(TIMES_NEW_ROMAN, 20)
         self.placeInformation(my_font,WIDTH/2, HEIGHT/4, f'Game turn : ' + str(self.turn), RED, True)
@@ -169,11 +177,32 @@ class App:
             print(f'Starting buff choice')
         
         self.buffChoicer.displayBuffChoice(self.game_window, False)
-        self.buffChoicer.choseBuff(self.game_window)
-
+        buffChosenIndex = self.buffChoicer.choseBuff(self.game_window)
+    
+    def applyBuff(self, indexBuff):
+        buffChosen = self.buffSelected[indexBuff]
+        for char in self.characters:
+            if char.team == buffChosen.attribution:
+                if buffChosen.name.contains('damage-value'):
+                    char_enhanced = char
+                    char_enhanced.damage += buffChosen.damage
+                    self.characters.delete(char)
+                    self.characters.append(char_enhanced)
+                elif buffChosen.name.contains('damage-ratio'):
+                    char_enhanced = char
+                    char_enhanced.damage = char_enhanced.damage * buffChosen.ratio
+                    self.characters.delete(char)
+                    self.characters.append(char_enhanced)
+        
+        self.orderChars()
 
     # Turns
-
+    
+    def orderChars(self):
+        if DEBUG_BUFF == True:
+            print(f'Ordering characters')
+        self.characters = self.characters.sort(key=lambda character: character.speed, reverse=True)
+        
     def startTurn(self):
         self.game_window.fill(BLACK)
         self.displayGrid()

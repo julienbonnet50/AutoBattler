@@ -27,7 +27,21 @@ class Buffs:
                                    BUFF_RANGE_DESC,
                                    BUFF_RANGE_VALUE, 
                                    BUFF_RANGE_VALUE_RATIO, 
-                                   BUFF_DAMAGE_RATIO_ATTRIBUTION, 
+                                   BUFF_RANGE_VALUE_ATTRIBUTION, 
+                                   0))
+        
+        self.buffsList.append(Buff(BUFF_SPEED_VALUE_NAME, 
+                                   BUFF_SPEED_VALUE_DESC,
+                                   BUFF_SPEED_VALUE_VALUE, 
+                                   BUFF_SPEED_VALUE_RATIO, 
+                                   BUFF_SPEED_VALUE_ATTRIBUTION, 
+                                   0))
+        
+        self.buffsList.append(Buff(BUFF_SPEED_RATIO_NAME, 
+                                   BUFF_SPEED_RATIO_DESC,
+                                   BUFF_SPEED_RATIO_VALUE, 
+                                   BUFF_SPEED_RATIO_RATIO, 
+                                   BUFF_SPEED_RATIO_ATTRIBUTION, 
                                    0))
         
 

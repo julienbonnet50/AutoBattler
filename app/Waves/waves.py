@@ -25,28 +25,12 @@ class Waves:
 
     def addWave2(self):
         map = Map(10)
-
-        Entity_monster = Characters("Boss", 
-                    600,
-                    12, 
-                    3, 
-                    2,
-                    0,
-                    [self.charList.Spell_beco],
-                    'ennemies',
-                    'hand.png')
         
-        Entity_ARCHER_2 = Characters("Archer", 
-                    100,
-                    5, 
-                    4, 
-                    5,
-                    9,
-                    [self.charList.Spell_offense],
-                    'ally',
-                    'archer.png')
+        Entity_ARCHER_2 = self.charList.Entity_ARCHER
+        Entity_ARCHER_2.position_x = 5
+        Entity_ARCHER_2.position_y = 9
                
-        charactersSelected = [Entity_ARCHER_2, Entity_monster]
+        charactersSelected = [self.charList.Entity_BOSS, Entity_ARCHER_2]
         wave = Wave(map, charactersSelected)
 
         self.waves.append(wave)
