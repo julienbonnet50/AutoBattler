@@ -1,5 +1,5 @@
 from app.Entity.characters import Characters
-from app.Constants.conf import *
+from app.Conf.conf import *
 import tkinter as tk
 from tkinter import *
 
@@ -26,8 +26,10 @@ class Map:
         for char in characters:
             self.placeCharacters(char)
     
-    def placeCharacters(self, characters):
-        self.map[characters.position_x][characters.position_y] = characters.name
+    def placeCharacters(self, character):
+        if DEBUG_MODE_MOVE == True:
+                print(f'Placed {character.name} at ({character.position_x}, {character.position_y})')
+        self.map[character.position_x][character.position_y] = character.name
     
     def display(self):
         if DEBUG_MAP == True:

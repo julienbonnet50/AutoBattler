@@ -1,6 +1,6 @@
 from app.Entity.characters import Characters
 from app.Spells.spell import Spell
-from app.Constants.conf import *
+from app.Conf.conf import *
 from app.Constants.initCharacters import *
 from app.Constants.initSpells import *
 
@@ -13,29 +13,32 @@ class CharactersList:
         self.Spell_beco = Spell(BECO_NAME, BECO_RANGE, BECO_DAMAGES, BECO_COST)
 
         # Players
-        self.Entity_eliotrope = Characters(P1_INIT_NAME, 
-                            P1_INIT_HP,
-                            P1_INIT_PA, 
-                            P1_INIT_PM, 
-                            P1_INIT_POSITION_X, 
-                            P1_INIT_POSITION_Y,
+        self.Entity_ARCHER = Characters(ARCHER_INIT_NAME, 
+                            ARCHER_INIT_HP,
+                            ARCHER_INIT_PA, 
+                            ARCHER_INIT_PM, 
+                            ARCHER_INIT_POSITION_X, 
+                            ARCHER_INIT_POSITION_Y,
                             [self.Spell_offense],
-                            P1_INIT_TEAM)
+                            ARCHER_INIT_TEAM,
+                            ARCHER_INIT_PATHIMG)
 
-        self.Entity_bouftou_blanc = Characters(BOUFTOU_INIT_NAME + "1", 
-                            BOUFTOU_INIT_HP,
-                            BOUFTOU_INIT_PA, 
-                            BOUFTOU_INIT_PM, 
-                            BOUFTOU_INIT_POSITION_X, 
-                            BOUFTOU_INIT_POSITION_Y,
+        self.Entity_HAND = Characters(HAND_INIT_NAME + "1", 
+                            HAND_INIT_HP,
+                            HAND_INIT_PA, 
+                            HAND_INIT_PM, 
+                            HAND_INIT_POSITION_X, 
+                            HAND_INIT_POSITION_Y,
                             [self.Spell_morsure],
-                            BOUFTOU_INIT_TEAM)
+                            HAND_INIT_TEAM,
+                            HAND_INIT_PATHIMG)
 
-        self.Entity_tofu = Characters(TOFU_INIT_NAME, 
-                            TOFU_INIT_HP,
-                            TOFU_INIT_PA, 
-                            TOFU_INIT_PM, 
-                            TOFU_INIT_POSITION_X, 
-                            TOFU_INIT_POSITION_Y,
+        self.Entity_MOSKITOS = Characters(MOSKITOS_INIT_NAME, 
+                            MOSKITOS_INIT_HP,
+                            MOSKITOS_INIT_PA, 
+                            MOSKITOS_INIT_PM, 
+                            MOSKITOS_INIT_POSITION_X, 
+                            MOSKITOS_INIT_POSITION_Y,
                             [self.Spell_beco],
-                            TOFU_INIT_TEAM)
+                            MOSKITOS_INIT_TEAM,
+                            MOSKITOS_INIT_PATHIMG)

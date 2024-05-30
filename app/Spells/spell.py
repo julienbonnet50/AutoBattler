@@ -1,4 +1,4 @@
-from app.Constants.conf import *
+from app.Conf.conf import *
 
 class Spell:
     def __init__(self,name, range, damages, cost):

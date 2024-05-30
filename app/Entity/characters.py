@@ -1,9 +1,9 @@
 import random
-from app.Constants.conf import *
+from app.Conf.conf import *
 
 class Characters():
 
-    def __init__(self, name, hp, pa, pm, position_x, position_y, spells, team):
+    def __init__(self, name, hp, pa, pm, position_x, position_y, spells, team, imgpath):
         self.name = name
         self.hp = hp
         self.max_hp = hp
@@ -14,6 +14,7 @@ class Characters():
         self.position_x = position_x
         self.position_y = position_y
         self.spells = spells
+        self.imgpath = imgpath
         self.possible_moves = []
     
     def printStats(self):
