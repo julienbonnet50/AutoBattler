@@ -1,13 +1,14 @@
 import pygame
 import math
 from app.Conf.conf import *
+import time
 
 class BuffChoicer():
     def __init__(self, buffSelected, width, height):
         self.buffSelected = buffSelected
         self.width = width
         self.height = height
-        self.font = pygame.font.SysFont(FRANKLIN, 35)
+        self.font = pygame.font.SysFont(FRANKLIN, 28)
         self.fontColor = pygame.Color(255, 255, 255)
         self.buttons = self.addButtons()
 
@@ -73,63 +74,65 @@ class BuffChoicer():
         for buff in self.buffSelected:
             if DEBUG_BUFF == True:
                 print(f'Created button for {buff.name}')
-            buttons.append({f"index": {count},"name": f"{buff.name}", "desc": f"{buff.description}", "color": self.resolveBuffFontColor(buff), "pos_x": (SPACE_SIZE) + (count*(150 + SPACE_SIZE)), "pos_y": 100, "size": (150, 200)})
+            buttons.append({f"index": count,"name": f"{buff.name}", "desc": f"{buff.description}", "color": self.resolveBuffFontColor(buff), "pos_x": (SPACE_SIZE) + (count*(150 + SPACE_SIZE)), "pos_y": 100, "size": (150, 200)})
             count  += 1 
 
         return buttons
 
-    def displayAndGetBuff(self, game_window):
-        running = True
-        while running:
-            # handle events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # check if the mouse click occurred within the bounds of a button
-                    for button in self.buttons:
-                        if button['rect'].collidepoint(event.pos):
-                            # execute the button's action
-                            if button['index'] == 0:
-                                if DEBUG_BUFF == True:
-                                    print('Buff 1 selected')
-                                return button['index']
-                            elif button['index'] == 1:
-                                if DEBUG_BUFF == True:
-                                    print('Button 2 selected')
-                                return button['index']
-                            elif button['index'] == 2:
-                                if DEBUG_BUFF == True:
-                                    print('Button 3 selected')
-                                return button['index']
+    def displayBuffChoice(self, game_window, isBuffHovered, indexBuffHovered = -1):
+        game_window.fill(BLACK)
+        time.sleep(0.05)
+        for button in self.buttons:
+            if isBuffHovered == True and button['index'] == indexBuffHovered:
+                buffHovered = pygame.Rect(button['pos_x']-10, button['pos_y']-10, button['size'][0]+20, button['size'][1]+20)
+                pygame.draw.rect(game_window, GREEN, buffHovered, 2)
 
-            # clear the window
-            game_window.fill((0, 0, 0))
+            buttonColor = pygame.Color(button['color'])
 
-            # draw the buttons
-            for button in self.buttons:
-                # define the textRect for each button and store it in the button dictionary
-                button['rect'] = pygame.Rect(button['pos_x'], button['pos_y'] + 150, button['size'][0], button['size'][1])
-                self.drawText(surface=game_window,
-                              text="Take it",
-                              color=button['color'],
-                              rect=button['rect'],
-                              font=self.font,
-                              align=2,
-                              aa=True)
-
-                buttonColor = pygame.Color(button['color'])
-
-                textRect = pygame.Rect(button['pos_x'], button['pos_y'], button['size'][0], button['size'][1])
-                pygame.draw.rect(game_window, buttonColor, textRect, 1)
-                self.drawText(surface=game_window,
-                            text=button['desc'],
+            textRect = pygame.Rect(button['pos_x'], button['pos_y'], button['size'][0], button['size'][1])
+            pygame.draw.rect(game_window, buttonColor, textRect, 1)
+            self.drawText(surface=game_window,
+                        text=button['desc'],
+                        color=button['color'],
+                        rect=textRect,
+                        font=self.font,
+                        align=2,
+                        aa=True)
+            
+            # define the textRect for each button and store it in the button dictionary
+            button['rect'] = pygame.Rect(button['pos_x'], button['pos_y'] + 150, button['size'][0], button['size'][1])
+            self.drawText(surface=game_window,
+                            text="Take it",
                             color=button['color'],
-                            rect=textRect,
+                            rect=button['rect'],
                             font=self.font,
                             align=2,
                             aa=True)
-
+            
             pygame.display.update()
-                             
-    
+            
+    def choseBuff(self, game_window):
+        pygame.event.clear()
+        while True:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            for button in self.buttons:
+                rectHovered = pygame.Rect(button['pos_x'], button['pos_y'], button['size'][0], button['size'][1])
+                if rectHovered.collidepoint(mouse_x, mouse_y):
+                    self.displayBuffChoice(game_window, True, button['index'])
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    # check if the mouse click occurred within the bounds of a button
+                    print(f'Click at {event.pos}')
+                    for button in self.buttons:
+                        textRect = pygame.Rect(button['pos_x'], button['pos_y'], button['size'][0], button['size'][1])
+                        pygame.display.update()
+                        if textRect.collidepoint(event.pos):
+                            # execute the button's action
+                            for i in range (0, len(self.buttons)):
+                                if button['index'] == i:
+                                    if DEBUG_BUFF == True:
+                                        print('Buff 1 selected')
+                                    return i
+

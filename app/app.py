@@ -168,11 +168,8 @@ class App:
         if DEBUG_BUFF == True:
             print(f'Starting buff choice')
         
-        self.game_window.fill(BLACK)
-            # Update the display
-        pygame.display.flip()
-    
-        self.buffChoicer.displayAndGetBuff(self.game_window)
+        self.buffChoicer.displayBuffChoice(self.game_window, False)
+        self.buffChoicer.choseBuff(self.game_window)
 
 
     # Turns
