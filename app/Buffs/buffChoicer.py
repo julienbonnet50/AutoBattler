@@ -80,7 +80,6 @@ class BuffChoicer():
         return buttons
 
     def displayBuffChoice(self, game_window, isBuffHovered, indexBuffHovered = -1):
-        game_window.fill(BLACK)
         time.sleep(0.05)
         for button in self.buttons:
             if isBuffHovered == True and button['index'] == indexBuffHovered:
@@ -109,7 +108,7 @@ class BuffChoicer():
                             align=2,
                             aa=True)
             
-            pygame.display.update()
+            pygame.display.update(textRect)
             
     def choseBuff(self, game_window):
         pygame.event.clear()

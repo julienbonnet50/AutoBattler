@@ -3,6 +3,7 @@ import pygame
 # LOG
 DEBUG_BUFF = True
 DEBUG_MAP = False
+DEBUG_CHAR = True
 DEBUG_MODE_MOVE = False
 DEBUG_MODE_SPELL = False
 DEBUG_MODE_SPELL_DEEP = False

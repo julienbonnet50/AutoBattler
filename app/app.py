@@ -12,28 +12,39 @@ import os
 sourceFileDir = os.path.dirname(os.path.abspath(__file__))
 
 class App:
-    def __init__(self, ally, wave, buffPools):
+    def __init__(self, allies, wave, buffPools):
         pygame.init()
 
         self.turn = 1
         self.map = wave.map
-        self.characters = wave.characters.append(ally)
+        self.characters = wave.characters
         self.ennemiesAlive = None
         self.alliesAlive = None
         self.game_window = None
         self.buffSelected = buffPools
 
+        self.addAlly(allies)
         self.initUi()
 
         self.buffChoicer = BuffChoicer(self.buffSelected,WIDTH, HEIGHT)
     
         self.orderChars()
 
+    # Start 
+    
+    def addAlly(self, allies):
+        count = 0
+        for ally in allies:
+            if DEBUG_CHAR == True:
+                print(f'{ally.name} added')
+            ally.position_x = self.map.mapSize - 1 * count
+            ally.position_y = self.map.mapSize - 1 * count
+            self.characters.append(ally)
 
     def initUi(self):
         # Get icon
         iconPath = os.path.join(sourceFileDir, 'assets', 'iconAutoBattler.png')
-        programIcon = pygame.image.load(iconPath)
+        programIcon = pygame.image.load(iconPath).convert()
         pygame.display.set_icon(programIcon)
 
         # Initialise game window
@@ -113,6 +124,8 @@ class App:
         for char in self.characters:
             if char.team == 'ally':
                 allyBuffed.append(char)  
+                if DEBUG_CHAR == True:
+                    print(f'{char.name} returned with buff')
         return allyBuffed      
     
     def game_over(self):
@@ -198,10 +211,10 @@ class App:
 
     # Turns
     
-    def orderChars(self):
-        if DEBUG_BUFF == True:
-            print(f'Ordering characters')
-        self.characters = self.characters.sort(key=lambda character: character.speed, reverse=True)
+#    def orderChars(self):
+#       if DEBUG_BUFF == True:
+#            print(f'Ordering characters')
+#        self.characters = self.characters.sort(key=lambda character: character.speed, reverse=True)
         
     def startTurn(self):
         self.game_window.fill(BLACK)

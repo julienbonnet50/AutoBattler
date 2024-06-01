@@ -16,8 +16,7 @@ class Waves:
 
     def addWave1(self):
         map = Map(25)
-        charactersSelected = [self.charList.Entity_ARCHER,
-                              self.charList.Entity_HAND, 
+        charactersSelected = [self.charList.Entity_HAND, 
                               self.charList.Entity_MOSKITOS]
         wave = Wave(map, charactersSelected)
 
@@ -25,12 +24,8 @@ class Waves:
 
     def addWave2(self):
         map = Map(10)
-        
-        Entity_ARCHER_2 = self.charList.Entity_ARCHER
-        Entity_ARCHER_2.position_x = 5
-        Entity_ARCHER_2.position_y = 9
                
-        charactersSelected = [self.charList.Entity_BOSS, Entity_ARCHER_2]
+        charactersSelected = [self.charList.Entity_BOSS]
         wave = Wave(map, charactersSelected)
 
         self.waves.append(wave)
