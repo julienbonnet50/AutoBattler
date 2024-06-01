@@ -1,8 +1,8 @@
 from app.Entity.characters import Characters
 from app.Spells.spell import Spell
 from app.Conf.conf import *
-from app.Constants.initCharacters import *
-from app.Constants.initSpells import *
+from app.Data.initCharacters import *
+from app.Data.initSpells import *
 
 class CharactersList:
     def __init__(self):

@@ -79,12 +79,25 @@ class BuffChoicer():
 
         return buttons
 
+    def cleanBuffDisplay(self, game_window):
+        allBuffRect = pygame.Rect(SPACE_SIZE, SPACE_SIZE, WIDTH, 200)
+        pygame.draw.rect(game_window, BLACK, allBuffRect, 1)
+        pygame.display.update(allBuffRect)
+
+
+
     def displayBuffChoice(self, game_window, isBuffHovered, indexBuffHovered = -1):
         time.sleep(0.05)
+        self.cleanBuffDisplay(game_window)
         for button in self.buttons:
+            buffHovered = pygame.Rect(button['pos_x']-7, button['pos_y']-7, button['size'][0]+14, button['size'][1]+14)
             if isBuffHovered == True and button['index'] == indexBuffHovered:
-                buffHovered = pygame.Rect(button['pos_x']-10, button['pos_y']-10, button['size'][0]+20, button['size'][1]+20)
-                pygame.draw.rect(game_window, GREEN, buffHovered, 2)
+                hoverColor = GREEN
+            else:
+                hoverColor = BLACK
+
+            pygame.draw.rect(game_window, hoverColor, buffHovered, 1)
+            pygame.display.update(buffHovered)
 
             buttonColor = pygame.Color(button['color'])
 
@@ -108,7 +121,7 @@ class BuffChoicer():
                             align=2,
                             aa=True)
             
-            pygame.display.update(textRect)
+            pygame.display.update(buffHovered)
             
     def choseBuff(self, game_window):
         pygame.event.clear()

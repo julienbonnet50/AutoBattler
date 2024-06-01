@@ -1,5 +1,6 @@
-from app.Constants.initBuffs import *
+from app.Data.initBuffs import *
 from app.Buffs.buff import *
+from app.Conf.conf import *
 
 class Buffs:
     def __init__(self):
@@ -8,7 +9,9 @@ class Buffs:
 
     
     def addClassicBuffs(self):
-        print(f'Append buff to buffList')
+        if DEBUG_BUFF == True:
+            print(f'Append buff to buffList')
+            
         self.buffsList.append(Buff(BUFF_DAMAGE_VALUE_NAME, 
                                    BUFF_DAMAGE_VALUE_DESC,
                                    BUFF_DAMAGE_VALUE_VALUE, 

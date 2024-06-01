@@ -27,7 +27,7 @@ class Map:
             self.placeCharacters(char)
     
     def placeCharacters(self, character):
-        if DEBUG_MODE_MOVE == True:
+        if DEBUG_CHAR == True:
                 print(f'Placed {character.name} at ({character.position_x}, {character.position_y})')
         self.map[character.position_x][character.position_y] = character.name
     

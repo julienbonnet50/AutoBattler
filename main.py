@@ -4,8 +4,8 @@ sys.dont_write_bytecode = True
 from app.Waves.waves import Waves
 from app.app import App
 from app.Conf.conf import *
-from app.Constants.initCharacters import *
-from app.Constants.initSpells import *
+from app.Data.initCharacters import *
+from app.Data.initSpells import *
 from app.Entity.allyTeam import *
 from app.menu import *
 import time

@@ -28,7 +28,7 @@ class App:
 
         self.buffChoicer = BuffChoicer(self.buffSelected,WIDTH, HEIGHT)
     
-        self.orderChars()
+        # self.orderChars()
 
     # Start 
     
@@ -37,8 +37,8 @@ class App:
         for ally in allies:
             if DEBUG_CHAR == True:
                 print(f'{ally.name} added')
-            ally.position_x = self.map.mapSize - 1 * count
-            ally.position_y = self.map.mapSize - 1 * count
+            ally.position_x = self.map.mapSize - (1 + count)
+            ally.position_y = self.map.mapSize - 1 
             self.characters.append(ally)
 
     def initUi(self):
@@ -188,7 +188,8 @@ class App:
     def buffChoice(self):
         if DEBUG_BUFF == True:
             print(f'Starting buff choice')
-        
+        self.game_window.fill(BLACK)
+        pygame.display.update()
         self.buffChoicer.displayBuffChoice(self.game_window, False)
         buffChosenIndex = self.buffChoicer.choseBuff(self.game_window)
     

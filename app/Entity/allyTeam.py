@@ -7,8 +7,6 @@ class AllyTeam:
         self.addAlly()
         
     def addAlly(self):
-        if DEBUG_CHAR == True:
-            print(f'add archer')
         self.characters.append(self.charList.Entity_ARCHER)
         
         
