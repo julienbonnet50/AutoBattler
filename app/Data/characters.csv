@@ -1,5 +1,5 @@
-name,hp,pa,pm,position_x,position_x,team,pathimg,damage,speed
-Archer,100,5,4,15,24,ally,archer.png,5,100
-Hand,200,4,3,10,0,ennemies,hand.png,5,90
-moskitos,50,8,10,5,0,ennemies,moskitos.png,5,90
-Boss,600,12,3,2,0,ennemies,hand.png,10,200
+id,name,hp,pa,pm,position_x,position_y,team,imgpath,damage,speed,spells
+0,Archer,100,5,4,15,24,ally,archer.png,5,100,'0'
+1,Hand,200,4,3,10,0,ennemies,hand.png,5,90,'2'
+2,moskitos,50,8,10,5,0,ennemies,moskitos.png,5,90,'3'
+3,Boss,600,12,3,2,0,ennemies,hand.png,10,200,'2-3'

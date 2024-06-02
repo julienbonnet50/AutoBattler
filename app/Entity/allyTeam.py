@@ -1,4 +1,4 @@
-from app.Entity.charactersList import *
+from app.Entity.charactersSpellsList import *
 
 class AllyTeam:
     def __init__(self, charList):
@@ -7,6 +7,6 @@ class AllyTeam:
         self.addAlly()
         
     def addAlly(self):
-        self.characters.append(self.charList.Entity_ARCHER)
+        self.characters.append(self.charList.charactersList[0])
         
         

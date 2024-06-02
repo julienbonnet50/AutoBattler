@@ -1,5 +1,5 @@
-name,range,damages,cost
-offense,100,50,4
-portail,4,0,1
-morsure,1,10,3
-beco,2,10,3
+id,name,range,damage,cost
+0,offense,100,50,4
+1,portail,4,0,1
+2,morsure,1,10,3
+3,beco,2,10,2

@@ -3,7 +3,8 @@ from app.Conf.conf import *
 
 class Characters():
 
-    def __init__(self, name, hp, pa, pm, position_x, position_y, spells, team, imgpath, damage, speed):
+    def __init__(self, id, name, hp, pa, pm, position_x, position_y, spells, team, imgpath, damage, speed):
+        self.id = id
         self.name = name
         self.hp = hp
         self.max_hp = hp

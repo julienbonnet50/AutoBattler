@@ -1,4 +1,4 @@
-from app.Entity.charactersList import CharactersList
+from app.Entity.charactersSpellsList import CharactersSpellsList
 from app.Map.map import Map
 from app.Waves.wave import Wave
 from app.Entity.characters import Characters
@@ -9,15 +9,16 @@ import random
 class Waves:
     def __init__(self):
         self.waves = []
-        self.charList = CharactersList()
+        self.charList = CharactersSpellsList()
         self.buffsPool = Buffs()
         self.addWave1()
         self.addWave2()         
 
     def addWave1(self):
         map = Map(25)
-        charactersSelected = [self.charList.Entity_HAND, 
-                              self.charList.Entity_MOSKITOS]
+        
+        charactersSelected = [self.charList.charactersList[1], 
+                              self.charList.charactersList[2]]
         wave = Wave(map, charactersSelected)
 
         self.waves.append(wave)
@@ -25,7 +26,7 @@ class Waves:
     def addWave2(self):
         map = Map(10)
                
-        charactersSelected = [self.charList.Entity_BOSS]
+        charactersSelected = [self.charList.charactersList[3]]
         wave = Wave(map, charactersSelected)
 
         self.waves.append(wave)

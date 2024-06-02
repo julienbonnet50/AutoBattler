@@ -1,4 +1,3 @@
-from app.Data.initBuffs import *
 from app.Buffs.buff import *
 from app.Conf.conf import *
 from utils.csv_loader import *
@@ -9,7 +8,6 @@ class Buffs:
         self.buffsList = []
         self.addClassicBuffs()
         
-
     
     def addClassicBuffs(self):
         sourceFileDir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -17,11 +15,17 @@ class Buffs:
         dataBuff = load_csv(pathBuffData)
 
         for buff in dataBuff:
-            self.buffList.append(buff)
-            if DEBUG_BUFF == True:
-                print(f'Append buff to buffList')
             
-
-        
+            buffMapping = Buff(name=buff["name"],
+                               description=buff["description"],
+                               value=int(buff["value"]),
+                               attribution=buff["attribution"],
+                               rarity=int(buff["rarity"]),
+                               ratio=float(buff["ratio"]))
+            
+            self.buffsList.append(buffMapping)
+            if DEBUG_BUFF == True:
+                print(f'Append buff {buffMapping.name} to buffList')
+            
 
         

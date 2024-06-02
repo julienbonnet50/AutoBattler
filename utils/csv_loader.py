@@ -1,4 +1,6 @@
-# csv_utils.py
+import sys
+sys.dont_write_bytecode = True
+
 import csv
 
 def load_csv(file_path):
