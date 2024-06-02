@@ -5,6 +5,12 @@ from types import NoneType
 from app.Waves.wave import Wave
 from app.Conf.conf import *
 from app.Buffs.buffChoicer import *
+from app.Map.map import *
+import copy
+from utils.display.draw import *
+
+
+
 import pygame
 import os
 
@@ -16,6 +22,8 @@ class App:
         pygame.init()
 
         self.turn = 1
+        self.wave_id = wave.id
+        self.initial_map = None
         self.map = wave.map
         self.characters = wave.characters
         self.ennemiesAlive = None
@@ -23,6 +31,7 @@ class App:
         self.game_window = None
         self.buffSelected = buffPools
 
+        self.initial_map = copy.deepcopy(self.map)
         self.addAlly(allies)
         self.initUi()
 
@@ -37,8 +46,8 @@ class App:
         for ally in allies:
             if DEBUG_CHAR == True:
                 print(f'{ally.name} added')
-            ally.position_x = self.map.mapSize - (1 + count)
-            ally.position_y = self.map.mapSize - 1 
+            ally.position_x = self.map.mapSize - (2 + count)
+            ally.position_y = self.map.mapSize - 2
             self.characters.append(ally)
 
     def initUi(self):
@@ -53,39 +62,8 @@ class App:
 
     # UI + Console prints
 
-    def placeInformation(self, font, x, y, text, color, bold):
-        info_surface = font.render(
-            f'{text}', bold, color
-        )
-        info_rect = info_surface.get_rect()
-        info_rect.midtop = (x, y)
-        self.game_window.blit(info_surface, info_rect)
-
-    def printStats(self):
-        count_ally = 0
-        count_ennemie = 0
-        for char in self.characters:
-            char.printStats()
-            title_font = pygame.font.SysFont(TIMES_NEW_ROMAN, 22,  True)
-            core_font = pygame.font.SysFont(TIMES_NEW_ROMAN, 16)
-           
-            if char.team == "ally":
-                self.placeInformation(title_font, WIDTH/2 + 125, HEIGHT/2, 'Ally stats', HAPPY_BLUE, True)
-                self.placeInformation(core_font, WIDTH/2 + 130, (count_ally * 82) + HEIGHT/2 + 42, f'Name : {char.name}', HAPPY_BLUE, True)
-                self.placeInformation(core_font, WIDTH/2 + 115, (count_ally * 82) + HEIGHT/2 + 62, f'HP : {char.hp}', HAPPY_BLUE, True)
-                self.placeInformation(core_font, WIDTH/2 + 135, (count_ally * 82) + HEIGHT/2 + 82, f'Position : ({char.position_x}, {char.position_y})', HAPPY_BLUE, True)
-                count_ally += 1
-            else:
-                self.placeInformation(title_font, WIDTH/2 + +150,SPACE_SIZE, 'Ennemies stats', VIOLET, True)
-                self.placeInformation(core_font, WIDTH/2 + 130, (count_ennemie * 82) + SPACE_SIZE + 42, f'Name : {char.name}', VIOLET, True)
-                self.placeInformation(core_font, WIDTH/2 + 115, (count_ennemie * 82) + SPACE_SIZE + 62, f'HP : {char.hp}', VIOLET, True)
-                self.placeInformation(core_font, WIDTH/2 + 135, (count_ennemie * 82) + SPACE_SIZE + 82, f'Position : ({char.position_x}, {char.position_y})', VIOLET, True)
-                count_ennemie += 1
-
-
     def displayTurn(self):
-        score_font = pygame.font.SysFont(TIMES_NEW_ROMAN, 15)
-        score_surface = score_font.render('Turn : ' + str(self.turn), True, WHITE)
+        score_surface = PIXEL_FONT_15.render('Turn : ' + str(self.turn), True, WHITE)
         score_rect = score_surface.get_rect()
         self.game_window.blit(score_surface, score_rect)
 
@@ -111,12 +89,6 @@ class App:
                 (char.position_x) * SPACE_SIZE + SPACE_SIZE - 10, (char.position_y) * SPACE_SIZE - 10 + SPACE_SIZE, (SPACE_SIZE + 20) * ratio, 5 )
             )
 
-    def displayGrid(self):
-        for x in range(0, self.map.mapSize * SPACE_SIZE, SPACE_SIZE):
-            for y in range(0, SPACE_SIZE * self.map.mapSize, SPACE_SIZE):
-                rect = pygame.Rect(x + SPACE_SIZE, y + SPACE_SIZE, SPACE_SIZE, SPACE_SIZE)
-                pygame.draw.rect(self.game_window, WHITE, rect, 1)
-
     # Wave :
     
     def selectAllyBuffed(self):
@@ -129,29 +101,29 @@ class App:
         return allyBuffed      
     
     def game_over(self):
-        my_font = pygame.font.SysFont(TIMES_NEW_ROMAN, 20)
-        self.placeInformation(my_font,WIDTH/2, HEIGHT/4, f'Game turn : ' + str(self.turn), RED, True)
+        placeInformation(self.game_window, PIXEL_FONT_22, WIDTH/2, HEIGHT/4, 250 , SPACE_SIZE , f'Game turn : ' + str(self.turn), RED, True)
         pygame.display.flip()
         time.sleep(5)
         pygame.quit()
         quit()
 
     def game_win(self):
-        my_font = pygame.font.SysFont(TIMES_NEW_ROMAN, 20)
-
-        self.placeInformation(my_font, WIDTH/2, HEIGHT/4, f'GOOD GAME !!! done in ' + str(self.turn) + ' turn', GREEN, True)
+        placeInformation(self.game_window, PIXEL_FONT_22, WIDTH/2, HEIGHT/4, 50 , SPACE_SIZE , f'GOOD GAME !!! done in ' + str(self.turn) + ' turn', GREEN, True)
 
     def getGameState(self):
         for char in self.characters:
             if char.hp < 0:
                 print(f'\n{char.name} is dead !')
                 self.characters.remove(char)
-                self.ennemiesAlive -= 1
+                if char.team == 'ennemies':
+                    self.ennemiesAlive -= 1
+                elif char.team == 'ally':
+                    self.alliesAlive -= 1
 
-            if self.alliesAlive == 0:
+            if self.alliesAlive < 1:
                 self.game_over()
 
-            if self.ennemiesAlive == 0:
+            if self.ennemiesAlive < 1:
                 self.game_win()
 
     def find_player_by_position(self, position):
@@ -162,7 +134,7 @@ class App:
 
         for char in self.characters:
             if char.name == positionCharName:
-                if DEBUG_MODE_SPELL == True:
+                if DEBUG_CHAR == True:
                     print(f"Found {positionCharName} at position ({position[0], [position[1]]})")
                 return char
             
@@ -170,17 +142,20 @@ class App:
 
     def spellActionApp(self, caster, target, spell):
         if target is None:
-            print("No target found")
+            if DEBUG_MODE_SPELL == True:
+                print("No target found")
             return False
         
         if target.team  == caster.team:
-            print("Target got the same team as caster")
+            if DEBUG_MODE_SPELL == True:
+                print("Target got the same team as caster")
             return False
 
         caster.current_pa -= spell.cost
         target.hp -= spell.damage
 
-        print(f"{caster.name} casts {spell.name} on {target.name} for {spell.damage} damage!")
+        if DEBUG_MODE_SPELL == True:
+            print(f"{caster.name} casts {spell.name} on {target.name} for {spell.damage} damage!")
         return True
     
     # Buff
@@ -192,23 +167,7 @@ class App:
         pygame.display.update()
         self.buffChoicer.displayBuffChoice(self.game_window, False)
         buffChosenIndex = self.buffChoicer.choseBuff(self.game_window)
-    
-    def applyBuff(self, indexBuff):
-        buffChosen = self.buffSelected[indexBuff]
-        for char in self.characters:
-            if char.team == buffChosen.attribution:
-                if buffChosen.name.contains('damage-value'):
-                    char_enhanced = char
-                    char_enhanced.damage += buffChosen.damage
-                    self.characters.delete(char)
-                    self.characters.append(char_enhanced)
-                elif buffChosen.name.contains('damage-ratio'):
-                    char_enhanced = char
-                    char_enhanced.damage = char_enhanced.damage * buffChosen.ratio
-                    self.characters.delete(char)
-                    self.characters.append(char_enhanced)
-        
-        self.orderChars()
+        self.characters= self.buffChoicer.applyBuff(indexBuff=buffChosenIndex, characters=self.characters)
 
     # Turns
     
@@ -219,12 +178,13 @@ class App:
         
     def startTurn(self):
         self.game_window.fill(BLACK)
-        self.displayGrid()
+        self.map.displayMap(self.game_window)
+        # self.map.displayGrid(self.game_window)
         self.displayChar()
                 
     def endTurn(self):
         self.getGameState()
-        self.printStats()
+        printStats(self.game_window, self.characters, self.ennemiesAlive, self.alliesAlive)
         self.map.display()
         self.displayTurn()
         pygame.display.update()
@@ -243,7 +203,14 @@ class App:
             self.map.placeCharacters(char)
 
         self.ennemiesAlive = countEnnemies
+        self.alliesAlive = countAllies
         self.map.display()
+
+    def resolveMapWave(self, id):
+        if id == 1:
+            return MAP_WAVE_1
+        elif id == 2:
+            return MAP_WAVE_2
 
     def doTurn(self):
         for char in self.characters:
@@ -257,10 +224,8 @@ class App:
             if DEBUG_MODE_MOVE == True:
                 print(f'Possible moves : {char.possible_moves}')
 
-            move_evaluated = char.evaluate_moves(self.map)
-            char.move(move_evaluated)
-            self.map.placeCharacters(char)
-            self.map.resetMap(self.characters)
+            char.move(char.evaluate_moves(self.map))
+            self.map.resetMap(map=self.resolveMapWave(self.wave_id), characters=self.characters)
 
             # Spells 
             while char.checkPA() == True:
@@ -276,9 +241,9 @@ class App:
             
             # End
             self.endTurn()
+            time.sleep(TIME)
 
 
-        time.sleep(TIME)
         self.turn += 1
 
 

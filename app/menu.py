@@ -12,9 +12,9 @@ class Menu:
         pygame.init()
         self.game_window = None
         self.button_width, self.button_heigth = 150, 50
-        self.font = pygame.font.SysFont(FRANKLIN, 28)
+        self.font = PIXEL_FONT_28
         self.initUi()
-        
+    
     def initUi(self):
         # Get icon
         iconPath = os.path.join(sourceFileDir, 'assets', 'iconAutoBattler.png')
@@ -45,7 +45,7 @@ class Menu:
         while True:
     
             self.game_window.fill((0,190,255))
-            menuBackgroundPath = os.path.join(sourceFileDir, 'assets', 'menu' ,'menu_background.jpg')
+            menuBackgroundPath = os.path.join(sourceFileDir, 'assets', 'menu' ,'menu_background.png')
             backgroundImage = pygame.image.load(menuBackgroundPath)
             self.game_window.blit(backgroundImage, (0, 0))
 

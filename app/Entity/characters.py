@@ -48,18 +48,27 @@ class Characters():
             print(f"Charater {self.name} used {distance} PM to move ({self.position_x}, {self.position_y})")
 
     def evaluate_moves(self, map):
-       #TODO : for possible_move in self.possible_moves:
-
-        final_position = random.choice(self.possible_moves)
-        if  map.map[final_position[0]][final_position[1]] != '':
+        if len(self.possible_moves) < 1:
             if DEBUG_MODE_MOVE == True:
-                print(f"Characters {self.name} cannot move because cell ({final_position[0]}, {final_position[1]}) is already occupied")
-            return self.position_x, self.position_y
-
-        if DEBUG_MODE_MOVE == True:
-            print(f"Move picked is : {final_position}")
-
-        return final_position
+                return self.position_x, self.position_y
+            
+        random.shuffle(self.possible_moves)
+        
+        possibleMoves = self.possible_moves
+        for move in possibleMoves:
+            if  map.map[move[0]][move[1]] == 0:
+                if DEBUG_MODE_MOVE == True:
+                    print(f"Move picked is : {move}")
+                return move
+            if  map.map[move[0]][move[1]] != 1:
+                if DEBUG_MODE_MOVE == True:
+                    print(f"Characters {self.name} cannot move because cell ({move[0]}, {move[1]}) is an obsactle")
+                continue
+            if  map.map[move[0]][move[1]] != 0 and map.map[move[0]][move[1]] != 1:
+                if DEBUG_MODE_MOVE == True:
+                    print(f"Characters {self.name} cannot move because cell ({move[0]}, {move[1]}) is already occupied") 
+                continue       
+            else: continue
 
     def get_possible_moves(self, position_x, position_y, pm, map_size):
         # Vérifier si le joueur a encore des points de déplacement

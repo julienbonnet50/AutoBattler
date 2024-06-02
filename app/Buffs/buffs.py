@@ -26,6 +26,7 @@ class Buffs:
             self.buffsList.append(buffMapping)
             if DEBUG_BUFF == True:
                 print(f'Append buff {buffMapping.name} to buffList')
-            
+
+        
 
         
