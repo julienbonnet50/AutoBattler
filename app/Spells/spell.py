@@ -29,7 +29,7 @@ class Spell:
                         print(f'Checking at ({x}, {y}) -> {map_value}')
 
                     # Check if the cell is occupied by an enemy character
-                    if map_value != 1 and map_value != 0 and map_value != player_name[0]:
+                    if isinstance(map_value, (str)) and map_value != player_name:
                         if DEBUG_MODE_SPELL == True:
                             print(f'Found possible attacks for {player_name} at position ({x}, {y})')
                         

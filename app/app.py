@@ -31,7 +31,6 @@ class App:
         self.game_window = None
         self.buffSelected = buffPools
 
-        self.initial_map = copy.deepcopy(self.map)
         self.addAlly(allies)
         self.initUi()
 
@@ -112,7 +111,7 @@ class App:
 
     def getGameState(self):
         for char in self.characters:
-            if char.hp < 0:
+            if char.hp < 0.01:
                 print(f'\n{char.name} is dead !')
                 self.characters.remove(char)
                 if char.team == 'ennemies':
@@ -222,10 +221,9 @@ class App:
             char.get_possible_moves(char.position_x, char.position_y, char.pm, self.map.mapSize)
 
             if DEBUG_MODE_MOVE == True:
-                print(f'Possible moves : {char.possible_moves}')
+                print(f'{char.name} at position ({char.position_x}, {char.position_y}) with {char.pm} PM, has possibles moves : {char.possible_moves}')
 
-            char.move(char.evaluate_moves(self.map))
-            self.map.resetMap(map=self.resolveMapWave(self.wave_id), characters=self.characters)
+            char.findAndEvaluateBestMove(self.map, self.characters)
 
             # Spells 
             while char.checkPA() == True:

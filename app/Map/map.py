@@ -6,6 +6,7 @@ from tkinter import *
 import random
 import os
 from math import gcd
+import copy
 
 class Map:
     def __init__(self, map, mapSize):
@@ -13,6 +14,7 @@ class Map:
         self.map = map
         self.bodies = []
         self.obstaclesImgPath = []
+
 
     def create_map(self, n):
         map = []
@@ -66,8 +68,6 @@ class Map:
 
                 mapObstacleImg = pygame.image.load(obstacleImgPath).convert_alpha()
                 game_window.blit(mapObstacleImg, ((x ) * SPACE_SIZE + SPACE_SIZE, (y) * SPACE_SIZE + SPACE_SIZE))
-
-
 
 
     def displayGrid(self, game_window):

@@ -1,4 +1,5 @@
 import random
+import math
 from app.Conf.conf import *
 
 class Characters():
@@ -40,13 +41,37 @@ class Characters():
         
     # Movement 
 
-    def move(self, position):
+    def move(self, position, map):
         distance = abs(self.position_x - position[0]) + abs(self.position_y  - position[1])
+        map[self.position_x][self.position_y] = 0
         self.position_x = position[0]
         self.position_y = position[1]
         if DEBUG_MODE_MOVE == True:
             print(f"Charater {self.name} used {distance} PM to move ({self.position_x}, {self.position_y})")
+        map[position[0]][position[1]] = self.name
 
+    def find_best_position(self, enemies, positions):
+        best_sum_dist = float('inf')
+        best_position = None
+        if DEBUG_MODE_MOVE == True:
+            print(f'Evaluating positions for {positions}')
+            
+        for position in positions:
+            # Find the closest point to the character
+            dists_to_points = [math.sqrt((p[0] - self.position_x) ** 2 + (p[1] - self.position_y) ** 2) for p in positions]
+            closest_point = positions[dists_to_points.index(min(dists_to_points))]
+
+            # Find the sum of the distances from the closest point to all the enemies
+            dists_to_enemies = [math.sqrt((e.position_x - closest_point[0]) ** 2 + (e.position_y - closest_point[1]) ** 2) for e in enemies]
+            sum_dist = sum(dists_to_enemies)
+
+            # Update the best sum of distances and the best position
+            if sum_dist < best_sum_dist:
+                best_sum_dist = sum_dist
+                best_position = position
+
+        return best_position
+    
     def evaluate_moves(self, map):
         if len(self.possible_moves) < 1:
             if DEBUG_MODE_MOVE == True:
@@ -56,21 +81,32 @@ class Characters():
         
         possibleMoves = self.possible_moves
         for move in possibleMoves:
-            if  map.map[move[0]][move[1]] == 0:
+            if  map[move[0]][move[1]] == 0:
                 if DEBUG_MODE_MOVE == True:
                     print(f"Move picked is : {move}")
                 return move
-            if  map.map[move[0]][move[1]] != 1:
+            if  map[move[0]][move[1]] != 1:
                 if DEBUG_MODE_MOVE == True:
                     print(f"Characters {self.name} cannot move because cell ({move[0]}, {move[1]}) is an obsactle")
-                continue
-            if  map.map[move[0]][move[1]] != 0 and map.map[move[0]][move[1]] != 1:
+                self.possible_moves.remove(move)
+            if  map[move[0]][move[1]] != 0 and map[move[0]][move[1]] != 1:
                 if DEBUG_MODE_MOVE == True:
                     print(f"Characters {self.name} cannot move because cell ({move[0]}, {move[1]}) is already occupied") 
-                continue       
+                self.possible_moves.remove(move)       
             else: continue
 
-    def get_possible_moves(self, position_x, position_y, pm, map_size):
+
+    def get_possible_moves(self, position_x, position_y, PM, mapSize):
+
+        # Loop through all possible positions in the grid
+        for x in range(mapSize):
+            for y in range(mapSize):
+                # Check if the position is within the character's movement range
+                if abs(x - position_x) + abs(y - position_y) <= PM:
+                    # If it is, add it to the list of accessible positions
+                    self.possible_moves.append((x, y))
+    
+    def get_possible_moves_old(self, position_x, position_y, pm, map_size):
         # Vérifier si le joueur a encore des points de déplacement
         if pm <= 0:
             return []
@@ -81,11 +117,24 @@ class Characters():
                 distance = abs(dx) + abs(dy)
                 if pm >= distance:
                     if (new_position_x, new_position_y) not in self.possible_moves:
-                        self.get_possible_moves(new_position_x, new_position_y, pm - distance, map_size)
+                        print(f'Add position ({new_position_x}, {new_position_y}) and retrieve {distance} to {pm}')
                         self.possible_moves.append((new_position_x, new_position_y))
+                        self.get_possible_moves(new_position_x, new_position_y, pm, map_size)
+                        
+
     
     def clear_moves(self):
         self.possible_moves = []
+        
+    def findAndEvaluateBestMove(self, map, characters):
+        ennemies = []
+        for char in characters:
+            if self.team != char.team:
+                ennemies.append(char)
+        
+        self.evaluate_moves(map.map)
+        best_move = self.find_best_position(ennemies, self.possible_moves)
+        self.move(best_move, map.map)
 
     # Spells
     
