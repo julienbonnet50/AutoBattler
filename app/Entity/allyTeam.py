@@ -8,5 +8,8 @@ class AllyTeam:
         
     def addAlly(self):
         self.characters.append(self.charList.charactersList[0])
+        self.characters.append(self.charList.charactersList[5])
+        self.characters.append(self.charList.charactersList[6])
+
         
         

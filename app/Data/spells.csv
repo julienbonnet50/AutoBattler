@@ -2,3 +2,5 @@ id,name,range,damage,cost
 0,offense,100,50,4
 1,morsure,1,10,3
 2,beco,2,10,2
+3,boule de feu, 14, 80, 8
+4,sorcellerie, 10, 40, 4
