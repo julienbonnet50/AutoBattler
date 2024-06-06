@@ -18,7 +18,7 @@ import os
 sourceFileDir = os.path.dirname(os.path.abspath(__file__))
 
 class App:
-    def __init__(self, allies, wave, buffPools):
+    def __init__(self, allies, wave):
         pygame.init()
 
         self.turn = 1
@@ -29,12 +29,12 @@ class App:
         self.ennemiesAlive = None
         self.alliesAlive = None
         self.game_window = None
-        self.buffSelected = buffPools
+        self.buffSelected = wave.buffSelected
 
         self.addAlly(allies)
         self.initUi()
 
-        self.buffChoicer = BuffChoicer(self.buffSelected,WIDTH, HEIGHT)
+        self.buffChoicer = BuffChoicer(self.buffSelected, WIDTH, HEIGHT)
     
         # self.orderChars()
 
@@ -158,7 +158,7 @@ class App:
         return True
     
     # Buff
-
+    
     def buffChoice(self):
         if DEBUG_BUFF == True:
             print(f'Starting buff choice')

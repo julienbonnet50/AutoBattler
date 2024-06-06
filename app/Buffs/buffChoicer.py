@@ -9,15 +9,15 @@ class BuffChoicer():
         self.buffSelected = buffSelected
         self.width = width
         self.height = height
-        self.font = PIXEL_FONT_28
-        self.fontColor = pygame.Color(255, 255, 255)
         self.buttons = self.addButtons()
 
     def resolveBuffFontColor(self, buff):
         if buff.rarity == 0:
-            return (255, 255, 255)
+            return (255, 255, 255), "classic"
         if buff.rarity == 1:
-            return (3, 104, 238)
+            return (3, 104, 238), "rare"
+        if buff.rarity == 2:
+            return (214, 55, 219), "epic"
 
     def addButtons(self):
         buttons = []
@@ -25,7 +25,8 @@ class BuffChoicer():
         for buff in self.buffSelected:
             if DEBUG_BUFF == True:
                 print(f'Created button for {buff.name}')
-            buttons.append({f"index": count,"name": f"{buff.name}", "desc": f"{buff.description}", "color": self.resolveBuffFontColor(buff), "pos_x": (SPACE_SIZE) + (count*(150 + SPACE_SIZE)), "pos_y": 100, "size": (150, 200)})
+            color, text = self.resolveBuffFontColor(buff)
+            buttons.append({f"index": count,"name": f"{buff.name}", "desc": f"{buff.description}", "color": color, "pos_x": (SPACE_SIZE) + (count*(150 + SPACE_SIZE)), "pos_y": 100, "size": (150, 200), "text": text})
             count  += 1 
 
         return buttons
@@ -34,8 +35,6 @@ class BuffChoicer():
         allBuffRect = pygame.Rect(SPACE_SIZE, SPACE_SIZE, WIDTH, 200)
         pygame.draw.rect(game_window, BLACK, allBuffRect, 1)
         pygame.display.update(allBuffRect)
-
-
 
     def displayBuffChoice(self, game_window, isBuffHovered, indexBuffHovered = -1):
         time.sleep(0.05)
@@ -53,22 +52,24 @@ class BuffChoicer():
             buttonColor = pygame.Color(button['color'])
 
             textRect = pygame.Rect(button['pos_x'], button['pos_y'], button['size'][0], button['size'][1])
+            textRectText = pygame.Rect(button['pos_x'], button['pos_y'] + 40, button['size'][0], button['size'][1])
+
             pygame.draw.rect(game_window, buttonColor, textRect, 1)
             drawText(surface=game_window,
                         text=button['desc'],
                         color=button['color'],
-                        rect=textRect,
-                        font=self.font,
+                        rect=textRectText,
+                        font=PIXEL_FONT_22,
                         align=2,
                         aa=True)
             
             # define the textRect for each button and store it in the button dictionary
             button['rect'] = pygame.Rect(button['pos_x'], button['pos_y'] + 150, button['size'][0], button['size'][1])
             drawText(surface=game_window,
-                            text="Take it",
+                            text=button['text'],
                             color=button['color'],
                             rect=button['rect'],
-                            font=self.font,
+                            font=PIXEL_FONT_16,
                             align=2,
                             aa=True)
             
@@ -112,6 +113,27 @@ class BuffChoicer():
                     char_enhanced.damage = char_enhanced.damage * buffChosen.ratio
                     characters.remove(char)
                     characters.append(char_enhanced)
-        
+                elif 'hp-value' in buffChosen.name:
+                    char_enhanced = char
+                    char_enhanced.max_hp += buffChosen.value
+                    char_enhanced.hp += buffChosen.value
+                    characters.remove(char)
+                    characters.append(char_enhanced)
+                elif 'speed-value' in buffChosen.name:
+                    char_enhanced = char
+                    char_enhanced.speed += buffChosen.value
+                    characters.remove(char)
+                    characters.append(char_enhanced)
+                elif 'speed-ratio' in buffChosen.name:
+                    char_enhanced = char
+                    char_enhanced.speed += char_enhanced.speed * buffChosen.ratio 
+                    characters.remove(char)
+                    characters.append(char_enhanced)
+                elif 'pa-value' in buffChosen.name:
+                    char_enhanced = char
+                    char_enhanced.pa += buffChosen.value
+                    characters.remove(char)
+                    characters.append(char_enhanced)
+                    
         return characters
 

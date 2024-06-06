@@ -19,7 +19,7 @@ wavesList = Waves()
 allyTeam = AllyTeam(wavesList.charList)
 
 for i in range (0, len(wavesList.waves)):
-    game = App(allyTeam.characters, wavesList.waves[i], wavesList.buffsPool.buffsList)
+    game = App(allyTeam.characters, wavesList.waves[i])
     game.firstTurn()
     while game.ennemiesAlive > 0:
         print("Turn : ", game.turn)

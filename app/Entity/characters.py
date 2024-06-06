@@ -81,23 +81,25 @@ class Characters():
         
         possibleMoves = self.possible_moves
         for move in possibleMoves:
-            if  map[move[0]][move[1]] == 0:
-                if DEBUG_MODE_MOVE == True:
-                    print(f"Move picked is : {move}")
-                return move
-            if  map[move[0]][move[1]] != 1:
-                if DEBUG_MODE_MOVE == True:
-                    print(f"Characters {self.name} cannot move because cell ({move[0]}, {move[1]}) is an obsactle")
-                self.possible_moves.remove(move)
-            if  map[move[0]][move[1]] != 0 and map[move[0]][move[1]] != 1:
+            map_value = map[move[0]][move[1]]
+            if isinstance(map_value, (int, float, complex)):
+                if  map_value == 0:
+                    if DEBUG_MODE_MOVE == True:
+                        print(f"Move picked is : {move}")
+                    return move
+                else:
+                    if DEBUG_MODE_MOVE == True:
+                        print(f"Characters {self.name} cannot move because cell ({move[0]}, {move[1]}) is an obsactle")
+                    self.possible_moves.remove(move)
+            elif isinstance(map_value, (str)):
                 if DEBUG_MODE_MOVE == True:
                     print(f"Characters {self.name} cannot move because cell ({move[0]}, {move[1]}) is already occupied") 
-                self.possible_moves.remove(move)       
+                self.possible_moves.remove(move)    
             else: continue
 
 
     def get_possible_moves(self, position_x, position_y, PM, mapSize):
-
+        
         # Loop through all possible positions in the grid
         for x in range(mapSize):
             for y in range(mapSize):
@@ -105,6 +107,7 @@ class Characters():
                 if abs(x - position_x) + abs(y - position_y) <= PM:
                     # If it is, add it to the list of accessible positions
                     self.possible_moves.append((x, y))
+                    
     
     def get_possible_moves_old(self, position_x, position_y, pm, map_size):
         # Vérifier si le joueur a encore des points de déplacement
