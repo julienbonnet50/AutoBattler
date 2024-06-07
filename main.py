@@ -11,21 +11,6 @@ import time
 # init
 menu = Menu()
 
-# Start menu
-menu.runMenu()
-
-# Start waves
-wavesList = Waves()
-allyTeam = AllyTeam(wavesList.charList)
-
-for i in range (0, len(wavesList.waves)):
-    game = App(allyTeam.characters, wavesList.waves[i])
-    game.firstTurn()
-    while game.ennemiesAlive > 0:
-        print("Turn : ", game.turn)
-        game.doTurn()
-
-    game.buffChoice()
-    allyTeam.characters = game.selectAllyBuffed()
-
-    time.sleep(3)
+while True:
+    # Start menu
+    menu.runMenu()
