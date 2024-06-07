@@ -79,7 +79,7 @@ def printStats(game_window, characters, ennemiesAlive, alliesAlive):
     initial_width = 120
     width_space = initial_width
     name_space = 60
-    HP_space = 30
+    HP_space = 50
     damage_space = 80
     position_space = 80
 
@@ -100,17 +100,16 @@ def printStats(game_window, characters, ennemiesAlive, alliesAlive):
             placeInformation(game_window, core_font, WIDTH/2 + width_space + name_space, (count_ally * 102) + HEIGHT/2 + 42, 150 , SPACE_SIZE , f'{char.name}', WHITE, False)
             
             placeInformation(game_window, core_font, WIDTH/2 + width_space, (count_ally * 102) + HEIGHT/2 + 62, 150 , SPACE_SIZE , f'HP : ', HAPPY_BLUE, False)
-            placeInformation(game_window, core_font, WIDTH/2 + width_space + HP_space, (count_ally * 102) + HEIGHT/2 + 62 + (20 * count_ally), 150 , SPACE_SIZE , f'{char.hp}', WHITE, False)
+            placeInformation(game_window, core_font, WIDTH/2 + width_space + HP_space, (count_ally * 102) + HEIGHT/2 + 62, 150 , SPACE_SIZE , f'{char.hp}', WHITE, False)
 
-            placeInformation(game_window, core_font, WIDTH/2 + width_space, (count_ally * 102) + HEIGHT/2 + 82 + (40 * count_ally), 150 , SPACE_SIZE , f'Damages : ', HAPPY_BLUE, False)
-            placeInformation(game_window, core_font, WIDTH/2 + width_space + damage_space, (count_ally * 102) + HEIGHT/2 + 82 + (40 * count_ally), 150 , SPACE_SIZE , f'{char.damage}', WHITE, False)
-            
+            placeInformation(game_window, core_font, WIDTH/2 + width_space, (count_ally * 102) + HEIGHT/2 + 82, 150 , SPACE_SIZE , f'Damages : ', HAPPY_BLUE, False)
+            placeInformation(game_window, core_font, WIDTH/2 + width_space + damage_space, (count_ally * 102) + HEIGHT/2 + 82, 150 , SPACE_SIZE , f'{char.damage}', WHITE, False)
 
-            placeInformation(game_window, core_font, WIDTH/2 + width_space, (count_ally * 102) + HEIGHT/2 + 102 + (60 * count_ally), 150 , SPACE_SIZE , f'Position : ', HAPPY_BLUE, False)
-            placeInformation(game_window, core_font, WIDTH/2 + width_space + position_space, (count_ally * 102) + HEIGHT/2 + 102 + (60 * count_ally), 200 , SPACE_SIZE , f'({char.position_x}, {char.position_y})', WHITE, False)
+            placeInformation(game_window, core_font, WIDTH/2 + width_space, (count_ally * 102) + HEIGHT/2 + 102, 150 , SPACE_SIZE , f'Position : ', HAPPY_BLUE, False)
+            placeInformation(game_window, core_font, WIDTH/2 + width_space + position_space, (count_ally * 102) + HEIGHT/2 + 102, 200 , SPACE_SIZE , f'({char.position_x}, {char.position_y})', WHITE, False)
             count_ally +=  1
 
-        if char.team == "ally" and 4 > count_ally > 2:
+        if char.team == "ally" and 4 > count_ally > 1:
             width_space = initial_width + 150
 
             placeInformation(game_window, core_font, WIDTH/2 + width_space, (count_ally * 102) + HEIGHT/2 + 42, 150 , SPACE_SIZE , f'Name : ', HAPPY_BLUE, False)
@@ -122,7 +121,6 @@ def printStats(game_window, characters, ennemiesAlive, alliesAlive):
             placeInformation(game_window, core_font, WIDTH/2 + width_space, (count_ally * 102) + HEIGHT/2 + 82 + (40 * count_ally), 150 , SPACE_SIZE , f'Damages : ', HAPPY_BLUE, False)
             placeInformation(game_window, core_font, WIDTH/2 + width_space + damage_space, (count_ally * 102) + HEIGHT/2 + 82 + (40 * count_ally), 150 , SPACE_SIZE , f'{char.damage}', WHITE, False)
             
-
             placeInformation(game_window, core_font, WIDTH/2 + width_space, (count_ally * 102) + HEIGHT/2 + 102 + (60 * count_ally), 150 , SPACE_SIZE , f'Position : ', HAPPY_BLUE, False)
             placeInformation(game_window, core_font, WIDTH/2 + width_space + position_space, (count_ally * 102) + HEIGHT/2 + 102 + (60 * count_ally), 200 , SPACE_SIZE , f'({char.position_x}, {char.position_y})', WHITE, False)
             count_ally +=  1

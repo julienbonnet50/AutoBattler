@@ -40,6 +40,14 @@ class Characters():
             return VIOLET
         
     # Movement 
+    
+    def setPosition(self, team, count, mapSize):
+        self.position_x =  mapSize -  (2 + (4 * count))
+        if team == 'ally':
+            self.position_y = mapSize - 2
+        else:
+            self.position_y = 2
+        
 
     def move(self, position, map):
         distance = abs(self.position_x - position[0]) + abs(self.position_y  - position[1])

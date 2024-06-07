@@ -197,6 +197,7 @@ class App:
             if char.team == 'ennemies':
                 countEnnemies += 1
             elif char.team == 'ally':
+                char.setPosition('ally', countAllies, self.map.mapSize)
                 countAllies += 1
 
             self.map.placeCharacters(char)
@@ -204,12 +205,6 @@ class App:
         self.ennemiesAlive = countEnnemies
         self.alliesAlive = countAllies
         self.map.display()
-
-    def resolveMapWave(self, id):
-        if id == 1:
-            return MAP_WAVE_1
-        elif id == 2:
-            return MAP_WAVE_2
 
     def doTurn(self):
         for char in self.characters:
