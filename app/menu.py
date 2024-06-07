@@ -30,7 +30,7 @@ class Menu:
 
     # Create a function to start the game
     def start_game(self):
-        self.run_pve_sewer(wavesList=Waves())
+        self.run_pve_caves(wavesList=Waves())
         print("Starting game...")
 
     # Create a function to quit the game
@@ -60,8 +60,8 @@ class Menu:
             mx, my = pygame.mouse.get_pos()
 
             #creating buttons
-            button_1 = pygame.Rect(WIDTH/2 - 50, HEIGHT/3 - 25, 200, 50)
-            button_2 = pygame.Rect(WIDTH/2 - 50, HEIGHT/1.5 - 25, 200, 50)
+            button_1 = pygame.Rect(WIDTH/2 - 70, HEIGHT/3 - 25, 200, 50)
+            button_2 = pygame.Rect(WIDTH/2 - 70, HEIGHT/1.5 - 25, 200, 50)
             
 
             #defining functions when a certain button is pressed
@@ -88,8 +88,8 @@ class Menu:
     
             pygame.display.update()
             
-    # Start Sewer waves
-    def run_pve_sewer(self, wavesList):
+    # Start Caves waves
+    def run_pve_caves(self, wavesList):
         allyTeam = AllyTeam(wavesList.charList)
         
         for i in range (0, len(wavesList.waves)):
